@@ -1,18 +1,20 @@
 # Dental RAG Chatbot
 
-Public dental support chatbot project with a premium frontend and a FastAPI backend foundation.
+Public dental support chatbot project with a premium frontend, FastAPI backend, and Qdrant-ready RAG layer.
 
 ## What is in this repo
 
 - `app/` - Next.js frontend for the chatbot demo
 - `components/` - reusable chat UI components
-- `backend/` - FastAPI backend foundation for Module 2
+- `backend/` - FastAPI backend with RAG services and Qdrant ingestion
+- `Doc/` - approved public dental support documents for the knowledge base
 - `lib/` - shared frontend utilities
 
 ## Current scope
 
 - Module 1: polished frontend chatbot UI with safe public guidance
 - Module 2: backend API foundation with `/health` and `/chat`
+- Module 3: Qdrant-backed retrieval layer and PDF knowledge-base ingestion
 
 ## Local development
 
@@ -30,6 +32,14 @@ python -m pip install -r backend/requirements.txt
 python -m uvicorn backend.app.main:app --reload --port 8000
 ```
 
+### Qdrant ingestion
+
+Set `QDRANT_URL` in `backend/.env`, then ingest the public dental guide:
+
+```bash
+python -m backend.app.scripts.ingest_knowledge_base
+```
+
 ### Frontend to backend connection
 
 Set this optional environment variable for the frontend:
@@ -40,6 +50,6 @@ NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 
 ## Notes
 
-- No OpenAI integration in the current modules.
-- No Qdrant integration in the current modules.
-- The backend returns structured dummy responses and safe handoff responses only.
+- Qdrant requires `QDRANT_URL`; the API key can be loaded from `QDRANT_API_KEY_FILE`.
+- OpenAI is optional for local development. If `OPENAI_API_KEY` is missing, the backend uses local deterministic embeddings and extractive answers.
+- The chatbot still blocks private claim-status requests and redirects users to human support.

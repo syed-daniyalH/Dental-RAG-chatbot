@@ -1,6 +1,6 @@
-# Module 2 Backend API Foundation
+# Module 2/3 Backend API Foundation
 
-This folder contains the FastAPI backend foundation for the Public Dental Support Chatbot.
+This folder contains the FastAPI backend foundation and Qdrant-ready RAG services for the Public Dental Support Chatbot.
 
 ## Run
 
@@ -29,9 +29,35 @@ The backend reads these values from `backend/.env`:
 - `APP_NAME`
 - `APP_ENV`
 - `FRONTEND_URL`
+- `QDRANT_URL`
+- `QDRANT_API_KEY` or `QDRANT_API_KEY_FILE`
+- `QDRANT_COLLECTION`
+- `OPENAI_API_KEY`
+- `OPENAI_CHAT_MODEL`
+- `OPENAI_EMBEDDING_MODEL`
+- `RAG_TOP_K`
+- `CHUNK_SIZE`
+- `CHUNK_OVERLAP`
+
+Use `backend/.env.example` as the template.
+
+## Ingest Knowledge Base
+
+After setting `QDRANT_URL`, run this from the repository root:
+
+```bash
+python -m backend.app.scripts.ingest_knowledge_base
+```
+
+By default, this indexes:
+
+```text
+Doc/Common Dental Claims Support Guide.pdf
+```
 
 ## Notes
 
-- No OpenAI integration in this module.
-- No Qdrant integration in this module.
-- The backend returns structured dummy responses and safe handoff responses only.
+- The `/chat` endpoint uses Qdrant retrieval when `QDRANT_URL` is configured.
+- If Qdrant is not configured, the endpoint falls back to the structured dummy responses.
+- If OpenAI is not configured, the backend can still use local deterministic embeddings and extractive answers for development.
+- The private-information safety handoff remains active before retrieval.
