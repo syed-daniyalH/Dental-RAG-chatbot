@@ -18,6 +18,7 @@ body {
     linear-gradient(180deg, #f6fbff 0%, #f7fdfd 46%, #eef8ff 100%);
   color: #0f172a;
   font-family: var(--font-manrope);
+  overflow-x: hidden;
 }
 
 body::before {

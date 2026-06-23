@@ -11,9 +11,9 @@ import "@fontsource/space-grotesk/700.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "DentalAI Support | Public Dental Claims Assistant",
+  title: "Dental AI Support | Public Dental Claims Guidance",
   description:
-    "AI-powered dental support for public claim, denial, procedure code, document, pre-authorization, and insurance term questions.",
+    "AI-powered dental support for public claim and insurance questions with safe, public-only guidance, source-backed answers, and future Qdrant-ready retrieval.",
 };
 
 export default function RootLayout({

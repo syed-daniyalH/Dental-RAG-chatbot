@@ -9,7 +9,15 @@ interface SourceCitationsProps {
 }
 
 export function SourceCitations({ sources }: SourceCitationsProps) {
-  if (sources.length === 0) {
+  const uniqueSources = sources.filter((source, index, current) => (
+    current.findIndex((candidate) => (
+      candidate.title === source.title
+      && candidate.category === source.category
+      && candidate.description === source.description
+    )) === index
+  ));
+
+  if (uniqueSources.length === 0) {
     return null;
   }
 
@@ -24,9 +32,9 @@ export function SourceCitations({ sources }: SourceCitationsProps) {
         Sources
       </div>
       <div className="mt-3 grid gap-2">
-        {sources.map((source) => (
+        {uniqueSources.map((source, index) => (
           <div
-            key={`${source.title}-${source.category}`}
+            key={`${source.title}-${source.category}-${index}`}
             className="rounded-xl border border-white/80 bg-white/90 px-3 py-2 shadow-sm"
           >
             <div className="flex items-start gap-2">
