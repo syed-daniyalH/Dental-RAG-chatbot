@@ -11,8 +11,9 @@ import "@fontsource/space-grotesk/700.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Public Dental Support Chatbot",
-  description: "Module 2 backend-connected chatbot foundation for a public dental support experience.",
+  title: "DentalAI Support | Public Dental Claims Assistant",
+  description:
+    "AI-powered dental support for public claim, denial, procedure code, document, pre-authorization, and insurance term questions.",
 };
 
 export default function RootLayout({
