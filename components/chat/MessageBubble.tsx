@@ -25,20 +25,20 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     >
       <div
         className={cn(
-          "max-w-[92%] rounded-[28px] px-4 py-3 shadow-sm md:max-w-[85%]",
+          "max-w-[92%] rounded-[22px] px-4 py-3 shadow-sm",
           isAssistant
-            ? "border border-slate-200 bg-white/92 text-slate-800"
-            : "bg-gradient-to-br from-sky-500 via-sky-500 to-teal-400 text-white shadow-lg shadow-sky-500/20",
+            ? "w-full border border-slate-200 bg-white/95 text-slate-800 md:max-w-full"
+            : "bg-gradient-to-br from-sky-500 via-sky-500 to-teal-400 text-white shadow-lg shadow-sky-500/20 md:max-w-[85%]",
         )}
       >
-        <div className="mb-2 flex items-center justify-between gap-4 text-[10px] font-semibold uppercase tracking-[0.24em] opacity-70">
+        <div className="mb-2 flex items-center justify-between gap-4 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-70">
           <span>{isAssistant ? "Assistant" : "You"}</span>
           <span className="normal-case tracking-normal opacity-80">
             {formatTimestamp(message.timestamp)}
           </span>
         </div>
 
-        <div className="space-y-3 text-[15px] leading-7">
+        <div className="space-y-3 text-[14px] leading-6 text-slate-700 md:text-[15px] md:leading-7">
           {blocks.map((block, index) => {
             if (block.type === "list") {
               if (block.ordered) {

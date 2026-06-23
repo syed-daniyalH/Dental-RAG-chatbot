@@ -28,6 +28,8 @@ export function ChatWidget({
   onSubmit,
   onSuggestedQuestion,
 }: ChatWidgetProps) {
+  const showSuggestedQuestions = messages.length === 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -38,7 +40,7 @@ export function ChatWidget({
     >
       <motion.section
         layout
-        className="pointer-events-auto relative flex h-full w-full flex-col overflow-hidden border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(245,251,255,0.96))] shadow-panel md:h-[min(840px,calc(100vh-3rem))] md:max-h-[840px] md:w-[440px] md:rounded-[32px] md:border md:backdrop-blur-2xl"
+        className="pointer-events-auto relative flex h-full w-full flex-col overflow-hidden border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(245,251,255,0.96))] shadow-panel md:h-[min(880px,calc(100vh-3rem))] md:max-h-[880px] md:w-[500px] md:rounded-[28px] md:border md:backdrop-blur-2xl lg:w-[540px]"
       >
         <div className="absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.14),transparent_65%)]" />
         <ChatHeader onClose={onClose} />
@@ -48,14 +50,16 @@ export function ChatWidget({
           <MessageList
             messages={messages}
             isTyping={isTyping}
-            className="rounded-[28px] border border-white/60 bg-white/55 px-2 py-2 shadow-sm backdrop-blur-sm"
+            className="rounded-[24px] border border-white/60 bg-white/65 px-2 py-2 shadow-sm backdrop-blur-sm"
           />
-          <SuggestedQuestions
-            questions={SUGGESTED_QUESTIONS}
-            onSelect={onSuggestedQuestion}
-            disabled={isTyping}
-            className="rounded-[24px] border border-sky-100 bg-white/70 p-3 shadow-sm"
-          />
+          {showSuggestedQuestions ? (
+            <SuggestedQuestions
+              questions={SUGGESTED_QUESTIONS}
+              onSelect={onSuggestedQuestion}
+              disabled={isTyping}
+              className="chat-scrollbar max-h-36 overflow-y-auto rounded-[18px] border border-sky-100 bg-white/75 p-3 shadow-sm"
+            />
+          ) : null}
           <ChatInput
             value={draft}
             onChange={onDraftChange}

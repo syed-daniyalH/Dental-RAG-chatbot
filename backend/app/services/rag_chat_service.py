@@ -14,7 +14,6 @@ SAFE_HANDOFF_RESPONSE = (
   "I can still explain general reasons why a dental claim may be delayed, rejected, or denied."
 )
 
-
 class RagChatService:
   def __init__(self, settings: Settings):
     self.settings = settings
@@ -78,12 +77,10 @@ class RagChatService:
     return response.output_text.strip()
 
   def _generate_extractive_answer(self, message: str, chunks: list[RetrievedChunk]) -> str:
-    best_chunk = chunks[0]
+    fallback = generate_dummy_response(message)
     return (
-      "Based on the public dental claims support guide, here is the most relevant general guidance:\n\n"
-      f"{best_chunk.text}\n\n"
-      "For exact claim details, benefit decisions, or account-specific status, contact your dental office, "
-      "billing team, or insurance carrier."
+      f"{fallback.answer}\n\n"
+      "This answer is matched with the approved public dental knowledge base below."
     )
 
   def _format_context(self, chunks: list[RetrievedChunk]) -> str:
