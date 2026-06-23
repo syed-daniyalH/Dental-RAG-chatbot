@@ -26,6 +26,7 @@ import type { ChatMessage, SuggestedQuestion } from "@/components/chat/chatTypes
 import { sendChatMessage } from "@/components/chat/chatApi";
 import { createId, normalizeInput } from "@/components/chat/chatUtils";
 import { AccordionSupportSlider } from "@/components/landing/AccordionSupportSlider";
+import { AnimatedWorkflowSection } from "@/components/landing/AnimatedWorkflowSection";
 import { MegaMenu } from "@/components/landing/MegaMenu";
 
 const ASK_CARDS = [
@@ -112,25 +113,6 @@ const SAFETY_CARDS = [
   {
     title: "Source-based answers",
     description: "Responses can be tied back to approved knowledge instead of free-form unsupported output.",
-  },
-] as const;
-
-const PROCESS_STEPS = [
-  {
-    title: "User asks a public dental support question",
-    description: "Visitors can ask about claims, denials, documents, codes, and insurance terms.",
-  },
-  {
-    title: "Assistant checks approved knowledge",
-    description: "Responses are matched with public dental support content instead of generic answers.",
-  },
-  {
-    title: "Safe guidance is returned",
-    description: "The answer stays calm, clear, and limited to general public information.",
-  },
-  {
-    title: "Private requests are handed off",
-    description: "Claim-status and account-specific questions direct users to the office or carrier.",
   },
 ] as const;
 
@@ -522,34 +504,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="workflow" className="py-12 lg:py-16">
-          <SectionHeader
-            eyebrow="Guided support flow"
-            title="How it works"
-            description="A simple public support workflow built around approved content and safe handoff behavior."
-          />
-          <div className="relative mt-8">
-            <div className="absolute left-10 right-10 top-10 hidden h-px bg-gradient-to-r from-sky-100 via-sky-300/80 to-teal-300/80 lg:block" />
-            <div className="grid gap-4 lg:grid-cols-4">
-              {PROCESS_STEPS.map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ delay: index * 0.04 }}
-                  className="relative rounded-[24px] border border-white/75 bg-white/84 p-5 shadow-sm backdrop-blur-xl transition hover:-translate-y-1.5 hover:border-sky-200 hover:shadow-panel"
-                >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
-                    {index + 1}
-                  </div>
-                  <h3 className="mt-5 font-display text-lg font-semibold text-slate-950">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <AnimatedWorkflowSection />
 
         <section id="features" className="py-12 lg:py-16">
           <SectionHeader
