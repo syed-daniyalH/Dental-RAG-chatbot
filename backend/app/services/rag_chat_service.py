@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ..config import Settings, get_settings
 from ..schemas import ChatResponse, SourceCitation
-from ..utils.safety import is_private_request
+from ..utils.safety import is_private_request, normalize_text
 from .dummy_chat_service import generate_dummy_response
 from .embedding_service import EmbeddingService
 from .qdrant_store import QdrantStore, RetrievedChunk
@@ -48,7 +48,7 @@ class RagChatService:
 
     return ChatResponse(
       answer=answer,
-      sources=self._source_citations(chunks),
+      sources=self._source_citations(chunks, message),
       handoff_required=False,
       response_type="general_guidance",
     )
@@ -90,11 +90,12 @@ class RagChatService:
       sections.append(f"[Source {index}: {chunk.title}{page_label}]\n{chunk.text}")
     return "\n\n".join(sections)
 
-  def _source_citations(self, chunks: list[RetrievedChunk]) -> list[SourceCitation]:
+  def _source_citations(self, chunks: list[RetrievedChunk], message: str) -> list[SourceCitation]:
     citations: list[SourceCitation] = []
     seen: set[tuple[str, str, int | None]] = set()
+    ordered_chunks = sorted(chunks, key=lambda chunk: _citation_priority(chunk, message))
 
-    for chunk in chunks:
+    for chunk in ordered_chunks:
       key = (chunk.title, chunk.category, chunk.page)
       if key in seen:
         continue
@@ -113,3 +114,30 @@ class RagChatService:
 
 def generate_rag_response(message: str) -> ChatResponse:
   return RagChatService(get_settings()).generate_response(message)
+
+
+def _citation_priority(chunk: RetrievedChunk, message: str) -> tuple[int, float]:
+  normalized = normalize_text(message)
+  is_general_intent = any(
+    phrase in normalized
+    for phrase in (
+      "hi",
+      "hello",
+      "hey",
+      "what can you do",
+      "how can you help",
+      "who are you",
+      "real person",
+      "are you a dentist",
+      "thank",
+      "bye",
+    )
+  )
+
+  if is_general_intent and chunk.category == "dental_chatbot_general_intents":
+    return (0, -chunk.score)
+
+  if not is_general_intent and chunk.category in {"dental_claims_support", "dental_chatbot_faq"}:
+    return (0, -chunk.score)
+
+  return (1, -chunk.score)

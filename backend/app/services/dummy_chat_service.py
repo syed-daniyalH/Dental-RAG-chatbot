@@ -73,6 +73,78 @@ def generate_dummy_response(message: str) -> ChatResponse:
       response_type="safe_handoff",
     )
 
+  if normalized in ("hi", "hello", "hey", "good morning", "good afternoon", "good evening"):
+    return _response(
+      answer=(
+        "Hello! I'm your Dental Support Assistant. I can help explain general dental claims, "
+        "dental codes, claim denials, claim rejections, insurance terms, pre-authorization, "
+        "required documents, and common reasons why a dental claim may fail.\n\n"
+        "Please note that I cannot check personal claim status or access private insurance records."
+      ),
+      sources=[SOURCES["claims_faq"], SOURCES["glossary"]],
+    )
+
+  if any(
+    phrase in normalized
+    for phrase in (
+      "what can you do",
+      "how can you help",
+      "what questions can i ask",
+      "give me examples",
+      "i need help",
+    )
+  ):
+    return _response(
+      answer=(
+        "I can help with general dental support questions, including:\n"
+        "- Dental claims and claim processing\n"
+        "- Dental procedure code concepts\n"
+        "- Claim denials and rejections\n"
+        "- Pre-authorization\n"
+        "- Required documents and attachments\n"
+        "- Tooth number and tooth surface requirements\n"
+        "- Insurance terms like deductible, copay, coinsurance, and annual maximum\n\n"
+        "I cannot check personal claim status, access patient records, verify benefits, or review private insurance accounts."
+      ),
+      sources=[SOURCES["claims_faq"], SOURCES["glossary"], SOURCES["documents"]],
+    )
+
+  if any(
+    phrase in normalized
+    for phrase in (
+      "who are you",
+      "are you a real person",
+      "are you a dentist",
+    )
+  ):
+    return _response(
+      answer=(
+        "I'm an AI Dental Support Assistant. I can provide general guidance about dental claims, "
+        "dental coding concepts, insurance terms, denials, rejections, and common claim processing issues.\n\n"
+        "I'm not a dentist and I cannot provide clinical diagnosis, treatment decisions, or final dental advice. "
+        "I also cannot access personal claim records or insurance accounts."
+      ),
+      sources=[SOURCES["claims_faq"], SOURCES["glossary"]],
+    )
+
+  if normalized in ("thank you", "thanks"):
+    return _response(
+      answer=(
+        "You're welcome! Feel free to ask if you need help understanding dental claims, "
+        "claim denials, rejections, dental codes, insurance terms, or next steps."
+      ),
+      sources=[SOURCES["claims_faq"]],
+    )
+
+  if normalized in ("bye", "goodbye"):
+    return _response(
+      answer=(
+        "Goodbye! If you have more questions later about dental claims, insurance terms, "
+        "claim denials, or claim rejections, I'll be here to help."
+      ),
+      sources=[SOURCES["claims_faq"]],
+    )
+
   if any(
     phrase in normalized
     for phrase in (
