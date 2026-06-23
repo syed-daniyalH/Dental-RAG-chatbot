@@ -40,6 +40,12 @@ Set `QDRANT_URL` in `backend/.env`, then ingest the public dental guide:
 python -m backend.app.scripts.ingest_knowledge_base
 ```
 
+To ingest the public FAQ Markdown document:
+
+```bash
+python -m backend.app.scripts.ingest_knowledge_base --document Doc/public_dental_chatbot_faq_v1.md --title "Public Dental Chatbot FAQ" --category dental_chatbot_faq
+```
+
 ### Frontend to backend connection
 
 Set this optional environment variable for the frontend:

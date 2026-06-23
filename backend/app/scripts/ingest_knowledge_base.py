@@ -4,17 +4,17 @@ import argparse
 from pathlib import Path
 
 from ..config import PROJECT_ROOT, get_settings
-from ..services.document_ingestion import load_pdf_chunks
+from ..services.document_ingestion import load_document_chunks
 from ..services.embedding_service import EmbeddingService
 from ..services.qdrant_store import QdrantStore
 
 
-DEFAULT_PDF_PATH = PROJECT_ROOT / "Doc" / "Common Dental Claims Support Guide.pdf"
+DEFAULT_DOCUMENT_PATH = PROJECT_ROOT / "Doc" / "Common Dental Claims Support Guide.pdf"
 
 
 def main() -> None:
-  parser = argparse.ArgumentParser(description="Ingest the public dental support PDF into Qdrant.")
-  parser.add_argument("--pdf", type=Path, default=DEFAULT_PDF_PATH)
+  parser = argparse.ArgumentParser(description="Ingest a public dental support document into Qdrant.")
+  parser.add_argument("--document", type=Path, default=DEFAULT_DOCUMENT_PATH)
   parser.add_argument("--title", default="Common Dental Claims Support Guide")
   parser.add_argument("--category", default="dental_claims_support")
   parser.add_argument("--batch-size", type=int, default=32)
@@ -24,12 +24,12 @@ def main() -> None:
   if not settings.qdrant_url:
     raise SystemExit("QDRANT_URL is required before ingesting documents into Qdrant.")
 
-  pdf_path = args.pdf if args.pdf.is_absolute() else PROJECT_ROOT / args.pdf
-  if not pdf_path.exists():
-    raise SystemExit(f"PDF not found: {pdf_path}")
+  document_path = args.document if args.document.is_absolute() else PROJECT_ROOT / args.document
+  if not document_path.exists():
+    raise SystemExit(f"Document not found: {document_path}")
 
-  chunks = load_pdf_chunks(
-    pdf_path=pdf_path,
+  chunks = load_document_chunks(
+    document_path=document_path,
     source_title=args.title,
     category=args.category,
     chunk_size=settings.chunk_size,

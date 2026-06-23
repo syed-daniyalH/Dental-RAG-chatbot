@@ -55,6 +55,12 @@ By default, this indexes:
 Doc/Common Dental Claims Support Guide.pdf
 ```
 
+To index the public FAQ Markdown document, run:
+
+```bash
+python -m backend.app.scripts.ingest_knowledge_base --document Doc/public_dental_chatbot_faq_v1.md --title "Public Dental Chatbot FAQ" --category dental_chatbot_faq
+```
+
 ## Notes
 
 - The `/chat` endpoint uses Qdrant retrieval when `QDRANT_URL` is configured.
