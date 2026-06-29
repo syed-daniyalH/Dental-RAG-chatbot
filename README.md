@@ -79,6 +79,4 @@ Active foundation project. The public chatbot experience, backend API, and retri
 
 ## Developer Credit
 
-Built by Nexol Tech Solutions.
-
 - GitHub: [syed-daniyalH](https://github.com/syed-daniyalH)
