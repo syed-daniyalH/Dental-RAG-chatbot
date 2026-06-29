@@ -15,7 +15,6 @@ import {
   MessageSquareText,
   PanelTop,
   ShieldCheck,
-  UploadCloud,
   Wand2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -27,6 +26,7 @@ import { sendChatMessage } from "@/components/chat/chatApi";
 import { createId, normalizeInput } from "@/components/chat/chatUtils";
 import { AccordionSupportSlider } from "@/components/landing/AccordionSupportSlider";
 import { AnimatedWorkflowSection } from "@/components/landing/AnimatedWorkflowSection";
+import { KnowledgeSubmissionPanel } from "@/components/landing/KnowledgeSubmissionPanel";
 import { MegaMenu } from "@/components/landing/MegaMenu";
 
 const ASK_CARDS = [
@@ -131,29 +131,6 @@ const FEATURE_CARDS = [
     title: "Professional Dental Tone",
     description: "Answers are calm, clear, and healthcare-appropriate for public website support.",
     icon: BadgeCheck,
-  },
-] as const;
-
-const ADMIN_ITEMS = [
-  {
-    title: "Upload Documents",
-    description: "Add new approved public support guides and future FAQ updates.",
-    icon: UploadCloud,
-  },
-  {
-    title: "Review Sources",
-    description: "Check what the assistant can cite before content goes live.",
-    icon: FileSearch,
-  },
-  {
-    title: "Test Questions",
-    description: "Validate answers against expected public-support scenarios.",
-    icon: ClipboardList,
-  },
-  {
-    title: "Update Knowledge Base",
-    description: "Refresh the approved library as dental support content evolves.",
-    icon: Database,
   },
 ] as const;
 
@@ -546,52 +523,16 @@ export default function Home() {
         </section>
 
         <section id="operations" className="py-12 lg:py-16">
-          <div className="grid gap-8 rounded-[32px] border border-white/75 bg-white/80 p-6 shadow-panel backdrop-blur-2xl lg:grid-cols-[0.92fr_1.08fr] lg:p-8">
+          <div className="grid gap-8 rounded-[32px] border border-white/75 bg-white/80 p-6 shadow-panel backdrop-blur-2xl lg:grid-cols-[0.88fr_1.12fr] lg:p-8">
             <div>
               <SectionHeader
                 eyebrow="Prepared for operations"
                 title="Knowledge base management preview"
-                description="The project is structured for a future admin workflow where teams manage approved public support documents."
+                description="Teams can upload approved public Q&A entries, tag them with dental keywords, and keep the knowledge base current."
               />
             </div>
 
-            <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/85 p-4 shadow-sm">
-              <div className="flex items-center justify-between rounded-2xl border border-white/80 bg-white/80 px-4 py-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Operations Preview
-                  </p>
-                  <p className="mt-1 font-display text-lg font-semibold text-slate-950">
-                    Approved content workspace
-                  </p>
-                </div>
-                <div className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                  Future-ready
-                </div>
-              </div>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                {ADMIN_ITEMS.map((item, index) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <motion.div
-                      key={item.title}
-                      initial={{ opacity: 0, y: 12 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-80px" }}
-                      transition={{ delay: index * 0.04 }}
-                      className="rounded-[22px] border border-white/80 bg-white/88 p-5 shadow-sm transition hover:-translate-y-1 hover:border-sky-200 hover:shadow-panel"
-                    >
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-600">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <h3 className="mt-4 font-display text-base font-semibold text-slate-950">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
+            <KnowledgeSubmissionPanel />
           </div>
         </section>
 

@@ -21,6 +21,7 @@ python -m uvicorn app.main:app --reload --port 8000
 - `GET /`
 - `GET /health`
 - `POST /chat`
+- `POST /admin/knowledge-submissions`
 
 ## Environment
 
@@ -61,9 +62,22 @@ To index the public FAQ Markdown document, run:
 python -m backend.app.scripts.ingest_knowledge_base --document Doc/public_dental_chatbot_faq_v1.md --title "Public Dental Chatbot FAQ" --category dental_chatbot_faq
 ```
 
+User-submitted public dental Q&A entries are appended to:
+
+```text
+Doc/public_dental_admin_submissions.md
+```
+
+If you want to index that file manually, run:
+
+```bash
+python -m backend.app.scripts.ingest_knowledge_base --document Doc/public_dental_admin_submissions.md --title "User Submitted Dental Q&A" --category dental_user_submission
+```
+
 ## Notes
 
 - The `/chat` endpoint uses Qdrant retrieval when `QDRANT_URL` is configured.
+- The `/admin/knowledge-submissions` endpoint validates dental keywords, blocks private claim data, and appends approved entries for future ingestion.
 - If Qdrant is not configured, the endpoint falls back to the structured dummy responses.
 - If OpenAI is not configured, the backend can still use local deterministic embeddings and extractive answers for development.
 - The private-information safety handoff remains active before retrieval.
