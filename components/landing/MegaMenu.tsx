@@ -4,12 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   ChevronDown,
-  Database,
   LockKeyhole,
   Menu,
-  MessageSquareText,
-  ShieldCheck,
-  Sparkles,
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -19,125 +15,42 @@ interface MegaMenuProps {
   onOpenChat: () => void;
 }
 
-type MenuGroup = {
-  title: string;
-  tagline: string;
-  icon: typeof Sparkles;
-  links: Array<{
-    label: string;
-    description: string;
-    href?: string;
-    badge?: string;
-    number: string;
-    action?: "chat";
-  }>;
+type MenuLink = {
+  label: string;
+  description: string;
+  href: string;
+  badge: string;
+  number: string;
 };
 
-const MENU_GROUPS: MenuGroup[] = [
+const MENU_LINKS: MenuLink[] = [
   {
-    title: "Presentation Flow",
-    tagline: "How the product introduces itself to dental website visitors.",
-    icon: Sparkles,
-    links: [
-      {
-        label: "Live Preview",
-        description: "Show the source-backed answer format before the chat opens.",
-        href: "#demo",
-        badge: "Demo",
-        number: "01",
-      },
-      {
-        label: "Visitor Questions",
-        description: "Highlight the real public support questions the assistant can handle.",
-        href: "#questions",
-        badge: "Scope",
-        number: "02",
-      },
-      {
-        label: "Feature Overview",
-        description: "Jump to the enterprise-ready experience and positioning section.",
-        href: "#features",
-        badge: "Product",
-        number: "03",
-      },
-      {
-        label: "Final Call To Action",
-        description: "Take the user straight to the final conversion section.",
-        href: "#contact",
-        badge: "CTA",
-        number: "04",
-      },
-    ],
+    label: "Features",
+    description: "Review the core product capabilities and positioning.",
+    href: "#features",
+    badge: "Core",
+    number: "01",
   },
   {
-    title: "Knowledge & Safety",
-    tagline: "Trust layers that keep public guidance clear, approved, and bounded.",
-    icon: ShieldCheck,
-    links: [
-      {
-        label: "Knowledge Base",
-        description: "Explore the approved content library that powers the assistant.",
-        href: "#knowledge",
-        badge: "Approved",
-        number: "05",
-      },
-      {
-        label: "Safety Rules",
-        description: "See the public-only protections and human handoff boundaries.",
-        href: "#safety",
-        badge: "Public-only",
-        number: "06",
-      },
-      {
-        label: "Qdrant-Ready RAG",
-        description: "Navigate to the retrieval-ready positioning for future expansion.",
-        href: "#knowledge",
-        badge: "RAG",
-        number: "07",
-      },
-      {
-        label: "Operations Preview",
-        description: "Review the future knowledge management workspace and admin view.",
-        href: "#operations",
-        badge: "Admin",
-        number: "08",
-      },
-    ],
+    label: "Safety",
+    description: "See the public-only guardrails and human handoff rules.",
+    href: "#safety",
+    badge: "Core",
+    number: "02",
   },
   {
-    title: "Support Journey",
-    tagline: "How visitors move from a question to safe guidance or a human handoff.",
-    icon: Database,
-    links: [
-      {
-        label: "How It Works",
-        description: "Walk through the public-support flow used across the landing page.",
-        href: "#workflow",
-        badge: "Flow",
-        number: "09",
-      },
-      {
-        label: "Open Chat",
-        description: "Launch the live assistant and test the public guidance experience.",
-        action: "chat",
-        badge: "Live",
-        number: "10",
-      },
-      {
-        label: "Human Handoff",
-        description: "Return to the section explaining office and carrier handoff behavior.",
-        href: "#safety",
-        badge: "Support",
-        number: "11",
-      },
-      {
-        label: "Contact Section",
-        description: "Jump back to the final area that invites the client to try the demo.",
-        href: "#contact",
-        badge: "Launch",
-        number: "12",
-      },
-    ],
+    label: "Demo",
+    description: "Jump to the source-backed support preview.",
+    href: "#demo",
+    badge: "Core",
+    number: "03",
+  },
+  {
+    label: "Contact",
+    description: "Go straight to the final call-to-action section.",
+    href: "#contact",
+    badge: "Core",
+    number: "04",
   },
 ];
 
@@ -145,6 +58,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
   const [desktopOpen, setDesktopOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const hasOpenMenu = desktopOpen || mobileOpen;
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -175,21 +89,24 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
     setMobileOpen(false);
   }
 
-  function handleAction(action?: "chat") {
-    if (action === "chat") {
-      onOpenChat();
-      closeMenus();
-    }
-  }
-
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative z-10">
+      <AnimatePresence>
+        {hasOpenMenu ? (
+          <motion.button
+            type="button"
+            aria-label="Close navigation overlay"
+            onClick={closeMenus}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-slate-950/10 backdrop-blur-sm"
+          />
+        ) : null}
+      </AnimatePresence>
+
       <div className="hidden lg:block">
-        <motion.div
-          animate={{ width: desktopOpen ? 292 : 196 }}
-          transition={{ type: "spring", stiffness: 280, damping: 26 }}
-          className="overflow-hidden rounded-full border border-white/75 bg-white/82 shadow-sm backdrop-blur-2xl"
-        >
+        <div className="relative z-50 w-[16rem] overflow-hidden rounded-full border border-white/75 bg-white/82 shadow-sm backdrop-blur-2xl">
           <button
             type="button"
             onClick={() => setDesktopOpen((current) => !current)}
@@ -202,13 +119,13 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
                 Navigation
               </p>
               <p className="truncate text-sm font-semibold text-slate-900">
-                {desktopOpen ? "Explore the dental AI experience" : "Open mega menu"}
+                {desktopOpen ? "Core navigation" : "Browse sections"}
               </p>
             </div>
 
             <div className="flex shrink-0 items-center gap-2">
               <span className="rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-sky-600">
-                12 links
+                4 links
               </span>
               <ChevronDown
                 className={cn(
@@ -218,7 +135,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
               />
             </div>
           </button>
-        </motion.div>
+        </div>
 
         <AnimatePresence>
           {desktopOpen ? (
@@ -227,15 +144,15 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.22, delay: 0.08 }}
-              className="absolute left-1/2 top-full z-40 mt-3 w-[min(66rem,calc(100vw-5rem))] -translate-x-1/2 rounded-[30px] border border-white/80 bg-white/88 p-5 shadow-panel backdrop-blur-2xl"
+              className="chat-scrollbar absolute right-0 top-full z-50 mt-3 max-h-[calc(100vh-7rem)] w-[min(45rem,calc(100vw-2rem))] overflow-y-auto rounded-[30px] border border-white/90 bg-white/[0.98] p-5 shadow-panel backdrop-blur-3xl"
             >
               <div className="flex items-center justify-between gap-4 rounded-[24px] border border-white/80 bg-[linear-gradient(135deg,rgba(14,165,233,0.1),rgba(20,184,166,0.12),rgba(255,255,255,0.92))] px-5 py-4">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-600">
-                    Two-step navigation
+                    Core navigation
                   </p>
                   <h2 className="mt-1 font-display text-xl font-semibold text-slate-950">
-                    Grouped around your current dental support system
+                    Four priority sections for a cleaner header
                   </h2>
                 </div>
                 <button
@@ -248,44 +165,23 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
                 </button>
               </div>
 
-              <div className="mt-4 grid gap-4 xl:grid-cols-3">
-                {MENU_GROUPS.map((group, groupIndex) => {
-                  const Icon = group.icon;
-
-                  return (
-                    <motion.div
-                      key={group.title}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 6 }}
-                      transition={{ delay: 0.12 + groupIndex * 0.04 }}
-                      className="rounded-[24px] border border-slate-200/75 bg-white/88 p-4 shadow-sm"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-50 to-teal-50 text-sky-600">
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h3 className="font-display text-lg font-semibold text-slate-950">{group.title}</h3>
-                          <p className="mt-1 text-sm leading-6 text-slate-600">{group.tagline}</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 space-y-2">
-                        {group.links.map((link) => (
-                          <MenuItem
-                            key={link.number}
-                            {...link}
-                            onSelect={() => {
-                              handleAction(link.action);
-                              closeMenus();
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </motion.div>
-                  );
-                })}
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {MENU_LINKS.map((link, index) => (
+                  <motion.div
+                    key={link.label}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: 0.12 + index * 0.04 }}
+                  >
+                    <MenuItem
+                      {...link}
+                      onSelect={() => {
+                        closeMenus();
+                      }}
+                    />
+                  </motion.div>
+                ))}
               </div>
 
               <div className="mt-4 flex items-center justify-between gap-4 rounded-[24px] border border-slate-200/75 bg-slate-50/80 px-5 py-4">
@@ -317,7 +213,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
         <button
           type="button"
           onClick={() => setMobileOpen((current) => !current)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/75 bg-white/82 text-slate-900 shadow-sm backdrop-blur-2xl transition hover:-translate-y-0.5"
+          className="relative z-50 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/75 bg-white/82 text-slate-900 shadow-sm backdrop-blur-2xl transition hover:-translate-y-0.5"
           aria-expanded={mobileOpen}
           aria-label="Toggle mobile navigation menu"
         >
@@ -331,52 +227,28 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 top-full z-40 mt-3 w-[min(24rem,calc(100vw-2rem))] rounded-[28px] border border-white/80 bg-white/92 p-4 shadow-panel backdrop-blur-2xl"
+              className="chat-scrollbar absolute right-0 top-full z-50 mt-3 max-h-[calc(100vh-7rem)] w-[min(24rem,calc(100vw-2rem))] overflow-y-auto rounded-[28px] border border-white/90 bg-white/[0.985] p-4 shadow-panel backdrop-blur-3xl"
             >
               <div className="rounded-[22px] border border-white/80 bg-[linear-gradient(135deg,rgba(14,165,233,0.1),rgba(20,184,166,0.12),rgba(255,255,255,0.95))] px-4 py-4">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-600">
-                  Mobile navigation
+                  Core navigation
                 </p>
                 <h2 className="mt-1 font-display text-lg font-semibold text-slate-950">
-                  Explore the dental AI landing page
+                  Four priority sections
                 </h2>
               </div>
 
-              <div className="mt-4 space-y-3">
-                {MENU_GROUPS.map((group) => {
-                  const Icon = group.icon;
-
-                  return (
-                    <div
-                      key={group.title}
-                      className="rounded-[22px] border border-slate-200/75 bg-slate-50/75 p-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-sky-600 shadow-sm">
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h3 className="font-display text-base font-semibold text-slate-950">{group.title}</h3>
-                          <p className="mt-1 text-sm leading-6 text-slate-600">{group.tagline}</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 space-y-2">
-                        {group.links.map((link) => (
-                          <MenuItem
-                            key={link.number}
-                            {...link}
-                            compact
-                            onSelect={() => {
-                              handleAction(link.action);
-                              closeMenus();
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="mt-4 space-y-2">
+                {MENU_LINKS.map((link) => (
+                  <MenuItem
+                    key={link.label}
+                    {...link}
+                    compact
+                    onSelect={() => {
+                      closeMenus();
+                    }}
+                  />
+                ))}
               </div>
 
               <button
@@ -404,7 +276,6 @@ function MenuItem({
   href,
   badge,
   number,
-  action,
   compact = false,
   onSelect,
 }: {
@@ -413,18 +284,17 @@ function MenuItem({
   href?: string;
   badge?: string;
   number: string;
-  action?: "chat";
   compact?: boolean;
   onSelect: () => void;
 }) {
   const commonClassName = cn(
-    "group flex w-full items-start gap-3 rounded-2xl border border-transparent bg-white/88 px-3 py-3 text-left transition hover:border-sky-100 hover:bg-sky-50/75",
+    "group flex w-full items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/88 px-3 py-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-sky-50/75 hover:shadow-panel",
     compact && "px-3 py-2.5",
   );
 
   const content = (
     <>
-      <span className="mt-0.5 rounded-full bg-slate-950 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-950 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
         {number}
       </span>
       <div className="min-w-0 flex-1">
@@ -450,9 +320,5 @@ function MenuItem({
     );
   }
 
-  return (
-    <button type="button" onClick={() => action && onSelect()} className={commonClassName}>
-      {content}
-    </button>
-  );
+  return null;
 }

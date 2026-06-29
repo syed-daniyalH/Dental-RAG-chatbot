@@ -16,21 +16,21 @@ interface AnimatedConnectionLineProps {
 }
 
 const PATHS: Record<ConnectionVariant, string> = {
-  "left-top": "M 392 128 C 516 128, 520 268, 620 268",
-  "left-middle": "M 392 320 C 518 320, 544 320, 620 320",
-  "left-bottom": "M 392 512 C 516 512, 520 372, 620 372",
-  "right-top": "M 888 128 C 764 128, 760 268, 660 268",
-  "right-middle": "M 888 320 C 762 320, 736 320, 660 320",
-  "right-bottom": "M 888 512 C 764 512, 760 372, 660 372",
+  "left-top": "M 354 160 C 430 160, 480 166, 516 246 S 548 330, 584 330",
+  "left-middle": "M 364 380 C 444 380, 506 380, 592 380",
+  "left-bottom": "M 354 600 C 430 600, 480 594, 516 514 S 548 430, 584 430",
+  "right-top": "M 846 160 C 770 160, 720 166, 684 246 S 652 330, 616 330",
+  "right-middle": "M 836 380 C 756 380, 694 380, 608 380",
+  "right-bottom": "M 846 600 C 770 600, 720 594, 684 514 S 652 430, 616 430",
 };
 
 const DOTS: Record<ConnectionVariant, Array<{ x: number; y: number }>> = {
-  "left-top": [{ x: 446, y: 128 }, { x: 596, y: 268 }],
-  "left-middle": [{ x: 446, y: 320 }, { x: 596, y: 320 }],
-  "left-bottom": [{ x: 446, y: 512 }, { x: 596, y: 372 }],
-  "right-top": [{ x: 834, y: 128 }, { x: 684, y: 268 }],
-  "right-middle": [{ x: 834, y: 320 }, { x: 684, y: 320 }],
-  "right-bottom": [{ x: 834, y: 512 }, { x: 684, y: 372 }],
+  "left-top": [{ x: 384, y: 160 }, { x: 530, y: 286 }, { x: 570, y: 330 }],
+  "left-middle": [{ x: 448, y: 380 }, { x: 566, y: 380 }],
+  "left-bottom": [{ x: 384, y: 600 }, { x: 530, y: 474 }, { x: 570, y: 430 }],
+  "right-top": [{ x: 816, y: 160 }, { x: 670, y: 286 }, { x: 630, y: 330 }],
+  "right-middle": [{ x: 752, y: 380 }, { x: 634, y: 380 }],
+  "right-bottom": [{ x: 816, y: 600 }, { x: 670, y: 474 }, { x: 630, y: 430 }],
 };
 
 export function AnimatedConnectionLine({
@@ -44,15 +44,15 @@ export function AnimatedConnectionLine({
       <motion.path
         d={PATHS[variant]}
         fill="none"
-        stroke="rgba(12, 201, 212, 0.98)"
+        stroke="url(#workflowGradient)"
         strokeLinecap="round"
         strokeWidth="3"
-        initial={{ pathLength: 0.28, opacity: 0.72 }}
+        initial={{ pathLength: 0, opacity: 0 }}
         whileInView={{ pathLength: 1, opacity: 1 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 1, delay }}
+        transition={{ duration: 1.2, ease: "easeInOut", delay }}
         style={{
-          filter: "drop-shadow(0 0 10px rgba(34,211,238,0.28))",
+          filter: "drop-shadow(0 0 12px rgba(34,211,238,0.28))",
         }}
       />
 
@@ -61,16 +61,16 @@ export function AnimatedConnectionLine({
           key={`${variant}-${dot.x}-${dot.y}`}
           cx={dot.x}
           cy={dot.y}
-          r="5.5"
+          r={index === dots.length - 1 ? "5.25" : "4.75"}
           fill="rgba(255,255,255,0.96)"
-          stroke="rgba(10, 203, 212, 0.95)"
-          strokeWidth="2"
-          initial={{ opacity: 1, scale: 1 }}
-          whileInView={{ opacity: 1, scale: [1, 1.12, 1] }}
+          stroke="rgba(6, 182, 212, 0.92)"
+          strokeWidth="1.75"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: [1, 1.1, 1] }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{
-            delay: delay + 0.3 + index * 0.08,
-            duration: 2.2,
+            delay: delay + 0.34 + index * 0.08,
+            duration: 2.6,
             repeat: Number.POSITIVE_INFINITY,
             repeatType: "mirror",
           }}

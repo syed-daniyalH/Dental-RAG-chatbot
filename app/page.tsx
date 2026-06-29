@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -15,11 +16,11 @@ import {
   MessageSquareText,
   PanelTop,
   ShieldCheck,
-  Sparkles,
   UploadCloud,
   Wand2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { ChatLauncher } from "@/components/chat/ChatLauncher";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import type { ChatMessage, SuggestedQuestion } from "@/components/chat/chatTypes";
@@ -72,21 +73,6 @@ const HERO_SUPPORT_CHIPS = [
   "Built for dental websites",
   "Source-backed answers",
   "Prepared for Qdrant-powered RAG",
-] as const;
-
-const PREVIEW_POINTS = [
-  {
-    title: "Approved sources visible",
-    description: "The live demo shows where the answer came from instead of relying on generic chatbot copy.",
-  },
-  {
-    title: "Public-only guidance",
-    description: "Private, account-specific questions are redirected to the office or insurance carrier.",
-  },
-  {
-    title: "Professional response tone",
-    description: "Answers stay calm, readable, and appropriate for dental website visitors.",
-  },
 ] as const;
 
 const SAFETY_CARDS = [
@@ -149,25 +135,6 @@ const FEATURE_CARDS = [
   },
 ] as const;
 
-const SOURCE_CARDS = [
-  {
-    title: "Public Dental Chatbot FAQ",
-    description: "Approved public responses for common claims, denial, document, and insurance questions.",
-  },
-  {
-    title: "Common Dental Claims Support Guide",
-    description: "Broader explanation content that supports source-backed guidance and public education.",
-  },
-  {
-    title: "General Intent Responses",
-    description: "Safe responses for greetings, capability questions, identity checks, and support boundaries.",
-  },
-  {
-    title: "Public Safety Guidelines",
-    description: "Rules that keep the assistant inside public-only support and private-data restrictions.",
-  },
-] as const;
-
 const ADMIN_ITEMS = [
   {
     title: "Upload Documents",
@@ -191,10 +158,32 @@ const ADMIN_ITEMS = [
   },
 ] as const;
 
-const CTA_CHIPS = [
-  "Public-safe claim guidance",
-  "Source citations",
-  "Qdrant-ready expansion",
+const HEADER_LINKS = [
+  { label: "Features", href: "#features" },
+  { label: "Safety", href: "#safety" },
+  { label: "Questions", href: "#questions" },
+  { label: "Contact", href: "#contact" },
+] as const;
+
+const FOOTER_PRODUCT_LINKS = [
+  { label: "Features", href: "#features" },
+  { label: "How It Works", href: "#workflow" },
+  { label: "Questions", href: "#questions" },
+  { label: "Demo", href: "#demo" },
+] as const;
+
+const FOOTER_SAFETY_LINKS = [
+  { label: "Public-Safe Design", href: "#safety" },
+  { label: "Privacy Notice", href: "#privacy" },
+  { label: "Safe Handoff", href: "#safety" },
+  { label: "Source-Based Answers", href: "#demo" },
+] as const;
+
+const FOOTER_RESOURCE_LINKS = [
+  { label: "Knowledge Base", href: "#knowledge" },
+  { label: "Dental Claims FAQ", href: "#questions" },
+  { label: "Common Claim Issues", href: "#questions" },
+  { label: "Contact Support", href: "#contact" },
 ] as const;
 
 export default function Home() {
@@ -202,6 +191,7 @@ export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [showLauncher, setShowLauncher] = useState(false);
 
   function closeChat() {
     setIsOpen(false);
@@ -294,16 +284,32 @@ export default function Home() {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const updateLauncherVisibility = () => {
+      const threshold = Math.max(280, Math.round(window.innerHeight * 0.72));
+      setShowLauncher(window.scrollY > threshold);
+    };
+
+    updateLauncherVisibility();
+    window.addEventListener("scroll", updateLauncherVisibility, { passive: true });
+    window.addEventListener("resize", updateLauncherVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", updateLauncherVisibility);
+      window.removeEventListener("resize", updateLauncherVisibility);
+    };
+  }, []);
+
   return (
-    <main className="relative min-h-screen overflow-hidden pb-32">
+    <main className="relative min-h-screen overflow-hidden pb-44 sm:pb-48 lg:pb-52">
       <div className="absolute inset-x-0 top-0 h-[48rem] bg-[radial-gradient(circle_at_18%_0%,rgba(14,165,233,0.18),transparent_34%),radial-gradient(circle_at_86%_12%,rgba(20,184,166,0.16),transparent_28%)]" />
       <div className="absolute left-[-9rem] top-[24rem] h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
       <div className="absolute right-[-12rem] top-[58rem] h-96 w-96 rounded-full bg-teal-200/30 blur-3xl" />
       <div className="absolute inset-x-0 top-[38rem] h-px bg-gradient-to-r from-transparent via-sky-200/50 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-        <header className="sticky top-4 z-30 rounded-[28px] border border-white/75 bg-white/82 px-4 py-3 shadow-sm backdrop-blur-2xl">
-          <nav className="flex items-center justify-between gap-3 lg:gap-4">
+        <header className="sticky top-4 z-50 rounded-[30px] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(248,252,255,0.84))] px-4 py-3 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-3xl">
+          <nav className="grid items-center gap-3 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 via-cyan-500 to-teal-400 text-white shadow-lg shadow-sky-500/25">
                 <Wand2 className="h-5 w-5" />
@@ -318,9 +324,35 @@ export default function Home() {
               </span>
             </a>
 
-            <div className="flex items-center gap-3">
-              <MegaMenu onOpenChat={openChat} />
+            <div className="hidden justify-center px-2 lg:flex">
+              <nav
+                aria-label="Primary navigation"
+                className="inline-flex max-w-full items-center rounded-full border border-white/80 bg-white/65 p-1 shadow-sm shadow-slate-950/5 backdrop-blur-xl"
+              >
+                {HEADER_LINKS.map((link, index) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className={cn(
+                      "relative whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold tracking-[-0.01em] transition",
+                      index === HEADER_LINKS.length - 1
+                        ? "text-slate-500 hover:bg-white/90 hover:text-slate-950"
+                        : "text-slate-600 hover:bg-white/90 hover:text-slate-950",
+                      index !== 0 &&
+                        "before:absolute before:left-0 before:top-1/2 before:h-4 before:w-px before:-translate-y-1/2 before:bg-slate-200/80",
+                    )}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
 
+            <div className="lg:hidden">
+              <MegaMenu onOpenChat={openChat} />
+            </div>
+
+            <div className="flex items-center gap-3 justify-self-end">
               <button
                 type="button"
                 onClick={openChat}
@@ -392,35 +424,7 @@ export default function Home() {
             </div>
           </div>
 
-          <AccordionSupportSlider />
-        </section>
-
-        <section id="demo" className="py-12 lg:py-14">
-          <div className="grid gap-8 rounded-[32px] border border-white/75 bg-white/76 p-6 shadow-panel backdrop-blur-2xl lg:grid-cols-[0.92fr_1.08fr] lg:p-8">
-            <div className="flex flex-col justify-between">
-              <div>
-                <SectionHeader
-                  eyebrow="Live preview"
-                  title="Source-backed support answer"
-                  description="Show the client how a real answer appears before the visitor even opens the full chat."
-                />
-              </div>
-
-              <div className="mt-8 space-y-3">
-                {PREVIEW_POINTS.map((item) => (
-                  <div
-                    key={item.title}
-                    className="rounded-2xl border border-slate-200/70 bg-white/88 px-4 py-4 shadow-sm"
-                  >
-                    <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <ChatPreview />
-          </div>
+          <HeroDoctorIllustration />
         </section>
 
         <section id="questions" className="py-12 lg:py-16">
@@ -536,70 +540,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="knowledge" className="grid gap-8 py-12 lg:grid-cols-[1fr_0.92fr] lg:py-16">
-          <div className="rounded-[32px] border border-white/75 bg-white/80 p-6 shadow-panel backdrop-blur-2xl lg:p-8">
-            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
-              <BookOpenText className="h-6 w-6" />
-            </div>
-            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Answers backed by approved public knowledge
-            </h2>
-            <p className="mt-4 text-base leading-8 text-slate-600">
-              Every response can be matched with approved public dental support content, giving the experience a stronger trust signal than a generic chatbot.
-            </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {SOURCE_CARDS.map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ delay: index * 0.04 }}
-                  className="rounded-2xl border border-sky-100 bg-sky-50/70 px-4 py-4"
-                >
-                  <div className="flex items-center gap-2">
-                    <BadgeCheck className="h-4 w-4 text-sky-600" />
-                    <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-                </motion.div>
-              ))}
-            </div>
+        <section id="knowledge" className="py-12 lg:py-16">
+          <div className="mx-auto max-w-[1120px]">
+            <AccordionSupportSlider />
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            className="relative overflow-hidden rounded-[32px] border border-sky-400/20 bg-slate-950 p-6 text-white shadow-glow lg:p-8"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.2),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(45,212,191,0.16),transparent_24%)]" />
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-sky-100">
-                <Database className="h-3.5 w-3.5" />
-                Qdrant-ready RAG
-              </div>
-              <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white">
-                Source-based search flow prepared for production expansion
-              </h2>
-              <p className="mt-4 text-base leading-8 text-slate-300">
-                The frontend is already positioned to present a future retrieval workflow without exposing technical clutter in the client demo.
-              </p>
-              <div className="mt-7 space-y-4">
-                {["Question", "Qdrant Search", "Approved Knowledge Base", "AI Response with Sources"].map((item, index) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/8 px-4 py-3"
-                  >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-teal-300 text-sm font-bold text-slate-950">
-                      {index + 1}
-                    </span>
-                    <span className="text-sm font-medium text-slate-100">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
         </section>
 
         <section id="operations" className="py-12 lg:py-16">
@@ -652,60 +596,77 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="py-14 lg:py-16">
-          <div className="rounded-[34px] border border-white/75 bg-[linear-gradient(135deg,rgba(14,165,233,0.14),rgba(20,184,166,0.16),rgba(255,255,255,0.92))] p-8 text-center shadow-panel backdrop-blur-2xl sm:p-10">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-sky-600 shadow-sm">
-              <Bot className="h-7 w-7" />
-            </div>
-            <h2 className="mx-auto mt-6 max-w-3xl font-display text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Ready for approved dental knowledge base support
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600">
-              Launch the chat demo to see public-safe answers, source citations, and handoff behavior for private claim questions.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              {CTA_CHIPS.map((chip) => (
-                <span
-                  key={chip}
-                  className="rounded-full border border-white/80 bg-white/86 px-3 py-1.5 text-xs font-semibold text-slate-700"
+        <section
+          id="contact"
+          className="bg-gradient-to-br from-white via-sky-50 to-cyan-50 py-16 lg:py-20"
+        >
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="rounded-[2rem] border border-cyan-100/70 bg-white/80 px-6 py-10 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+              <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                <div className="max-w-3xl">
+                  <p className="text-xs font-semibold uppercase tracking-[0.32em] text-sky-600">
+                    Final step
+                  </p>
+                  <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                    Ready to support dental website visitors?
+                  </h2>
+                  <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
+                    Launch the chat demo to see public-safe answers, source citations, and handoff behavior for private claim questions.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={openChat}
+                  className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-200"
                 >
-                  {chip}
-                </span>
-              ))}
+                  Launch Chat Demo
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={openChat}
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-200"
+
+            <footer
+              id="privacy"
+              className="mt-6 rounded-[2rem] border border-cyan-100/70 bg-white/80 px-6 py-10 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:px-8 sm:py-12 lg:px-10 lg:py-12"
             >
-              Launch Chat Demo
-              <ArrowRight className="h-4 w-4" />
-            </button>
+              <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="max-w-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 via-cyan-500 to-teal-400 text-white shadow-lg shadow-sky-500/25">
+                      <Wand2 className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-display text-xl font-semibold text-slate-950">
+                        Dental AI Support
+                      </p>
+                      <p className="mt-1 text-sm font-medium text-slate-600">
+                        Public dental claims guidance only.
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-5 text-sm leading-7 text-slate-600">
+                    Helping website visitors understand dental claims, denials, rejections, insurance terms, and safe next steps without accessing private patient records.
+                  </p>
+                </div>
+
+                <FooterLinkColumn title="Product" links={FOOTER_PRODUCT_LINKS} />
+                <FooterLinkColumn title="Safety" links={FOOTER_SAFETY_LINKS} />
+                <FooterLinkColumn title="Resources" links={FOOTER_RESOURCE_LINKS} />
+              </div>
+
+              <div className="mt-10 border-t border-slate-200/70 pt-6">
+                <p className="max-w-4xl text-sm leading-7 text-slate-500">
+                  This assistant provides general guidance only and cannot access private claim, insurance, or patient records.
+                </p>
+              </div>
+            </footer>
           </div>
         </section>
-
-        <footer className="border-t border-slate-200/70 py-8">
-          <div className="flex flex-col gap-5 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="font-display font-semibold text-slate-900">Dental Support Assistant</p>
-              <p className="mt-1">Public dental claims guidance only.</p>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <a href="#features" className="hover:text-sky-700">Features</a>
-              <a href="#safety" className="hover:text-sky-700">Safety</a>
-              <a href="#demo" className="hover:text-sky-700">Demo</a>
-              <a href="#contact" className="hover:text-sky-700">Contact</a>
-              <span>Privacy Notice</span>
-            </div>
-          </div>
-          <p className="mt-5 max-w-3xl text-xs leading-6 text-slate-500">
-            This assistant provides general guidance only and cannot access private claim, insurance, or patient records.
-          </p>
-        </footer>
       </div>
 
       <AnimatePresence>
-        {!isOpen ? <ChatLauncher onClick={openChat} /> : null}
+        {!isOpen && showLauncher ? <ChatLauncher onClick={openChat} /> : null}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -745,53 +706,68 @@ function SectionHeader({
   );
 }
 
-function ChatPreview() {
+function FooterLinkColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: ReadonlyArray<{
+    label: string;
+    href: string;
+  }>;
+}) {
   return (
-    <div className="relative">
-      <div className="relative overflow-hidden rounded-[32px] border border-white/85 bg-white/92 p-5 shadow-panel backdrop-blur-2xl">
-        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-sky-50 to-transparent" />
-        <div className="relative">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-500">Live preview</p>
-              <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-slate-950">
-                Source-backed support answer
-              </h2>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
-              <Sparkles className="h-5 w-5" />
-            </div>
-          </div>
-
-          <div className="mt-6 space-y-4">
-            <div className="ml-auto max-w-[85%] rounded-[22px] bg-gradient-to-br from-sky-500 via-cyan-500 to-teal-400 px-4 py-3 text-sm leading-6 text-white shadow-lg shadow-sky-500/20">
-              Why was my dental claim denied?
-            </div>
-
-            <div className="rounded-[24px] border border-slate-200/80 bg-white px-4 py-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Assistant
-              </p>
-              <p className="mt-3 text-base leading-8 text-slate-700">
-                A dental claim may be denied for several general reasons, such as inactive coverage, missing documentation, waiting periods, frequency limitations, or service not covered under the plan.
-              </p>
-
-              <div className="mt-4 rounded-2xl border border-sky-100 bg-sky-50/85 p-4">
-                <div className="flex items-center gap-2">
-                  <BadgeCheck className="h-4 w-4 text-sky-600" />
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-600">
-                    Sources
-                  </p>
-                </div>
-                <div className="mt-3 space-y-2 text-sm font-medium text-slate-700">
-                  <p>Public Dental Chatbot FAQ</p>
-                  <p>Common Dental Claims Support Guide</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-600">{title}</p>
+      <ul className="mt-4 space-y-3">
+        {links.map((link) => (
+          <li key={link.label}>
+            <a
+              href={link.href}
+              className="group inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:translate-x-0.5 hover:text-sky-700"
+            >
+              <span>{link.label}</span>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 opacity-0 transition group-hover:opacity-100" />
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
+  );
+}
+
+
+function HeroDoctorIllustration() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-120px" }}
+      transition={{ duration: 0.55, ease: "easeOut" }}
+      className="relative mx-auto w-full max-w-[42rem]"
+    >
+      <div className="absolute -inset-6 rounded-[42px] bg-[radial-gradient(circle_at_25%_18%,rgba(56,189,248,0.24),transparent_36%),radial-gradient(circle_at_78%_20%,rgba(45,212,191,0.18),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.92),rgba(239,249,255,0.82),rgba(232,250,247,0.74))] blur-2xl" />
+      <div className="relative overflow-hidden rounded-[34px] border border-white/85 bg-white/88 p-5 shadow-glow backdrop-blur-2xl sm:p-6">
+        <div className="relative overflow-hidden rounded-[30px] border border-sky-100 bg-[radial-gradient(circle_at_50%_30%,rgba(191,243,255,0.76),rgba(255,255,255,0.96)),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(239,249,255,0.9))] p-4 sm:p-6">
+          <div className="absolute inset-x-10 top-8 h-32 rounded-full bg-sky-200/40 blur-3xl" />
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
+            className="relative mx-auto max-w-[34rem]"
+          >
+            <Image
+              src="/hero-dental-assistant.png"
+              alt="Animated doctor illustration for the dental support chatbot"
+              width={1280}
+              height={1280}
+              priority
+              className="h-auto w-full select-none drop-shadow-[0_30px_45px_rgba(56,189,248,0.24)]"
+            />
+          </motion.div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white via-white/80 to-transparent" />
+        </div>
+
+      </div>
+    </motion.div>
   );
 }

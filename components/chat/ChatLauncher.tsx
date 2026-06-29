@@ -20,12 +20,12 @@ export function ChatLauncher({ onClick, className }: ChatLauncherProps) {
       whileHover={{ y: -2, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "group fixed bottom-5 right-5 z-40 flex items-center gap-3 rounded-full border border-white/70 bg-white/88 px-4 py-3 text-slate-900 shadow-panel backdrop-blur-xl transition focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 md:bottom-6 md:right-6",
+        "group fixed bottom-4 right-4 z-40 flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-white/88 p-0 text-slate-900 shadow-panel backdrop-blur-xl transition focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 md:bottom-6 md:right-6 md:h-auto md:w-auto md:justify-start md:gap-3 md:px-4 md:py-3",
         className,
       )}
       aria-label="Open dental support chat"
     >
-      <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 via-cyan-500 to-teal-400 text-white shadow-lg shadow-sky-500/30">
+      <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 via-cyan-500 to-teal-400 text-white shadow-lg shadow-sky-500/30 md:h-12 md:w-12">
         <MessageSquareText className="h-6 w-6" />
         <span className="absolute inset-0 animate-ping rounded-full bg-white/20" />
       </span>

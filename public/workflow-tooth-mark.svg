@@ -1,0 +1,39 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(160 150) rotate(90) scale(138)">
+      <stop offset="0" stop-color="#67E8F9"/>
+      <stop offset="1" stop-color="#0EA5E9"/>
+    </radialGradient>
+    <linearGradient id="core" x1="72" y1="64" x2="260" y2="272" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7DD3FC"/>
+      <stop offset="0.52" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#2DD4BF"/>
+    </linearGradient>
+    <filter id="shadow" x="22" y="24" width="276" height="276" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="12" result="effect1_foregroundBlur"/>
+    </filter>
+  </defs>
+
+  <circle cx="160" cy="160" r="146" fill="#E0F7FF" fill-opacity="0.7"/>
+  <circle cx="160" cy="160" r="132" stroke="#A5F3FC" stroke-opacity="0.55" stroke-width="2.5" stroke-dasharray="7 11"/>
+
+  <g filter="url(#shadow)">
+    <circle cx="160" cy="160" r="108" fill="url(#glow)" fill-opacity="0.18"/>
+  </g>
+
+  <circle cx="160" cy="160" r="96" fill="url(#core)"/>
+  <circle cx="160" cy="160" r="95" stroke="white" stroke-opacity="0.3" stroke-width="2"/>
+  <circle cx="160" cy="160" r="72" fill="white" fill-opacity="0.12" stroke="white" stroke-opacity="0.18" stroke-width="1.5"/>
+
+  <path
+    d="M160.018 95C129.587 95 108 118.344 108 149.378C108 170.676 119.915 185.083 130.339 205.825C136.105 217.327 138.356 232.349 144.46 241.808C148.341 247.823 153.119 251 160.018 251C166.916 251 171.694 247.823 175.575 241.808C181.68 232.349 183.93 217.327 189.697 205.825C200.12 185.083 212.036 170.676 212.036 149.378C212.036 118.344 190.449 95 160.018 95ZM141.886 142.592C132.912 142.592 125.451 134.8 125.451 125.576C125.451 117.145 131.33 110.317 139.123 109.008C149.125 107.329 156.761 114.435 160.018 125.313C163.275 114.435 170.911 107.329 180.913 109.008C188.706 110.317 194.585 117.145 194.585 125.576C194.585 134.8 187.124 142.592 178.15 142.592C173.244 142.592 169.302 140.163 166.426 136.208C163.979 132.845 162.18 128.411 160.018 123.145C157.856 128.411 156.057 132.845 153.609 136.208C150.734 140.163 146.791 142.592 141.886 142.592Z"
+    fill="white"
+  />
+
+  <circle cx="241" cy="108" r="9" fill="white" fill-opacity="0.82"/>
+  <path d="M87 114L94 121L101 114" stroke="white" stroke-opacity="0.7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M254 202H266" stroke="white" stroke-opacity="0.68" stroke-width="3" stroke-linecap="round"/>
+  <path d="M260 196V208" stroke="white" stroke-opacity="0.68" stroke-width="3" stroke-linecap="round"/>
+</svg>

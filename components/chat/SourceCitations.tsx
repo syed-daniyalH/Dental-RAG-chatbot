@@ -31,23 +31,25 @@ export function SourceCitations({ sources }: SourceCitationsProps) {
         <BookOpenText className="h-3.5 w-3.5" />
         Sources
       </div>
-      <div className="mt-3 grid gap-2">
+      <div className="mt-3 grid gap-1.5">
         {uniqueSources.map((source, index) => (
           <div
             key={`${source.title}-${source.category}-${index}`}
-            className="rounded-xl border border-white/80 bg-white/90 px-3 py-2 shadow-sm"
+            className="rounded-[18px] border border-white/80 bg-white/92 px-3 py-2.5 shadow-sm"
           >
-            <div className="flex items-start gap-2">
-              <BadgeInfo className="mt-0.5 h-4 w-4 shrink-0 text-sky-500" />
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-semibold leading-5 text-slate-900">{source.title}</p>
-                  <span className="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-sky-600">
-                    {formatCategory(source.category)}
-                  </span>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-start gap-2">
+                <BadgeInfo className="mt-0.5 h-4 w-4 shrink-0 text-sky-500" />
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold leading-5 text-slate-900">{source.title}</p>
+                  {source.description ? (
+                    <p className="mt-1 text-[11px] leading-4 text-slate-500">{source.description}</p>
+                  ) : null}
                 </div>
-                <p className="mt-1 text-xs leading-5 text-slate-500">{source.description}</p>
               </div>
+              <span className="shrink-0 rounded-full bg-sky-50 px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.14em] text-sky-600">
+                {formatCategory(source.category)}
+              </span>
             </div>
           </div>
         ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { ChatMessage } from "./chatTypes";
 import { ChatEmptyState } from "./ChatEmptyState";
 import { MessageBubble } from "./MessageBubble";
@@ -16,16 +16,23 @@ interface MessageListProps {
 
 export function MessageList({ messages, isTyping, className }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const hasMessages = messages.length > 0;
+  const latestMessage = hasMessages ? messages[messages.length - 1] : null;
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, isTyping]);
+    if (!latestMessage) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      return;
+    }
 
-  const messageNodes = useMemo(
-    () => messages.map((message) => <MessageBubble key={message.id} message={message} />),
-    [messages],
-  );
+    if (latestMessage.role === "assistant") {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [latestMessage, isTyping]);
 
   if (!hasMessages) {
     return (
@@ -43,7 +50,17 @@ export function MessageList({ messages, isTyping, className }: MessageListProps)
       aria-live="polite"
       aria-relevant="additions"
     >
-      <div className="space-y-4">{messageNodes}</div>
+      <div className="space-y-4">
+        {messages.map((message, index) => (
+          <div
+            key={message.id}
+            ref={index === messages.length - 1 ? lastMessageRef : undefined}
+            className={index === messages.length - 1 ? "scroll-mt-3" : undefined}
+          >
+            <MessageBubble message={message} />
+          </div>
+        ))}
+      </div>
 
       <AnimatePresence>{isTyping ? <TypingIndicator /> : null}</AnimatePresence>
       <div ref={bottomRef} />
