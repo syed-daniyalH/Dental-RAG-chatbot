@@ -9,7 +9,7 @@ import {
   Play,
   Sparkles,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   accordionSliderData,
@@ -20,6 +20,8 @@ export function AccordionSupportSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const activeCardRef = useRef<HTMLButtonElement | null>(null);
+  const [activeCardWidth, setActiveCardWidth] = useState(0);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1024px)");
@@ -46,6 +48,38 @@ export function AccordionSupportSlider() {
     return () => window.clearInterval(timer);
   }, [isDesktop, isPaused]);
 
+  useEffect(() => {
+    if (!isDesktop) {
+      setActiveCardWidth(0);
+      return;
+    }
+
+    const element = activeCardRef.current;
+
+    if (!element) {
+      setActiveCardWidth(0);
+      return;
+    }
+
+    const updateWidth = () => {
+      setActiveCardWidth(Math.round(element.getBoundingClientRect().width));
+    };
+
+    updateWidth();
+
+    const resizeObserver = typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(() => updateWidth())
+      : null;
+
+    resizeObserver?.observe(element);
+    window.addEventListener("resize", updateWidth);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, [activeIndex, isDesktop]);
+
   function goToCard(index: number) {
     setActiveIndex(index);
   }
@@ -61,6 +95,7 @@ export function AccordionSupportSlider() {
   }
 
   const activeCard = accordionSliderData[activeIndex];
+  const isNarrowActiveCard = isDesktop && activeCardWidth > 0 && activeCardWidth < 560;
 
   return (
     <div
@@ -108,6 +143,7 @@ export function AccordionSupportSlider() {
                 key={card.id}
                 type="button"
                 layout
+                ref={isActive ? activeCardRef : undefined}
                 initial={false}
                 animate={{
                   flexGrow: isActive ? 4.75 : 1,
@@ -136,7 +172,7 @@ export function AccordionSupportSlider() {
                 <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/90 via-white/30 to-transparent" />
 
                 {isActive ? (
-                  <ExpandedCardContent card={card} />
+                  <ExpandedCardContent card={card} isNarrow={isNarrowActiveCard} />
                 ) : (
                   <div className="relative flex h-full flex-col px-4 py-5">
                     <div className="flex items-start justify-between gap-2">
@@ -241,18 +277,21 @@ export function AccordionSupportSlider() {
 function ExpandedCardContent({
   card,
   compact = false,
+  isNarrow = false,
 }: {
   card: AccordionSliderItem;
   compact?: boolean;
+  isNarrow?: boolean;
 }) {
   const Icon = card.icon;
+  const useStackedLayout = compact || isNarrow;
 
   return (
-    <div className="relative h-full px-5 py-5 sm:px-6">
+    <div className={cn("relative h-full", useStackedLayout ? "px-4 py-4 sm:px-5" : "px-5 py-5 sm:px-6")}>
       <div
         className={cn(
           "relative z-10 h-full",
-          compact ? "flex flex-col gap-4" : "grid gap-5 lg:grid-cols-[minmax(0,1.04fr)_minmax(280px,0.96fr)]",
+          useStackedLayout ? "flex flex-col gap-4" : "grid gap-5 lg:grid-cols-[minmax(0,1.04fr)_minmax(280px,0.96fr)]",
         )}
       >
         <div className="flex h-full flex-col">
@@ -278,7 +317,7 @@ function ExpandedCardContent({
             ) : null}
           </div>
 
-          <div className={cn("mt-4 space-y-3", compact ? "max-w-none" : "max-w-[34rem]")}>
+          <div className={cn("mt-4 space-y-3", useStackedLayout ? "max-w-none" : "max-w-[34rem]")}>
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-600">
                 User asked
@@ -297,18 +336,18 @@ function ExpandedCardContent({
               </p>
             </div>
 
-            <div className="rounded-[24px] border border-white/80 bg-white/82 px-4 py-4 shadow-sm">
+            <div className={cn("rounded-[24px] border bg-white/82 shadow-sm", useStackedLayout ? "border-emerald-100 px-4 py-3" : "border-white/80 px-4 py-4")}>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Public-safe note
               </p>
-              <p className="mt-2 text-sm leading-6 text-slate-700">
+              <p className={cn("mt-2 text-sm leading-6 text-slate-700", useStackedLayout && "text-[13px] leading-5")}>
                 Private claim details stay with the dental office or carrier, so the assistant stays useful without crossing into records.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex h-full flex-col gap-4">
+        <div className={cn("flex h-full flex-col gap-4", useStackedLayout && "gap-3")}>
           <div className="rounded-[26px] border border-white/80 bg-white/86 px-4 py-4 shadow-sm">
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -333,29 +372,19 @@ function ExpandedCardContent({
           <div
             className={cn(
               "relative overflow-hidden rounded-[26px] border border-cyan-100/80 bg-[radial-gradient(circle_at_top,rgba(191,243,255,0.82),rgba(255,255,255,0.97))] p-4 shadow-sm",
-              compact ? "mt-0" : "min-h-[16rem] pr-40 pb-28",
+              useStackedLayout ? "mt-0 min-h-[11rem]" : "min-h-[16rem] pr-40 pb-28",
             )}
           >
             <div className="relative z-10">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-600">
                 What visitors learn
               </p>
-              <p className="mt-2 max-w-[17rem] text-sm leading-6 text-slate-700">
+              <p className={cn("mt-2 max-w-[17rem] text-sm leading-6 text-slate-700", useStackedLayout && "max-w-none text-[13px] leading-5")}>
                 Clear public guidance, trusted source references, and a safe next step when the question becomes private.
               </p>
             </div>
 
-            {compact ? (
-              <div className="relative z-10 mt-4 flex justify-end">
-                <Image
-                  src="/hero-dental-assistant.png"
-                  alt=""
-                  width={240}
-                  height={240}
-                  className="h-auto w-[8.5rem] select-none opacity-20 drop-shadow-[0_20px_32px_rgba(56,189,248,0.14)]"
-                />
-              </div>
-            ) : (
+            {useStackedLayout ? null : (
               <motion.div
                 initial={false}
                 animate={{ opacity: 0.16, scale: 1 }}
