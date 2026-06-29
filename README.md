@@ -1,22 +1,48 @@
 # Dental RAG Chatbot
 
-Public dental support chatbot project with a premium frontend, FastAPI backend, and Qdrant-ready RAG layer.
+## Overview
 
-## What is in this repo
+Dental RAG Chatbot is a public-safe AI chatbot web application built for dental support websites. It combines a polished Next.js frontend, a FastAPI backend, and a Qdrant-ready retrieval layer to deliver source-backed educational answers without exposing private patient or insurance account data.
 
-- `app/` - Next.js frontend for the chatbot demo
-- `components/` - reusable chat UI components
-- `backend/` - FastAPI backend with RAG services and Qdrant ingestion
-- `Doc/` - approved public dental support documents for the knowledge base
-- `lib/` - shared frontend utilities
+## Key Features
 
-## Current scope
+- Public-facing dental support chatbot interface
+- Safe-answering model focused on general educational guidance
+- FastAPI backend with chat and health endpoints
+- Qdrant-ready RAG pipeline for source-backed answers
+- PDF knowledge-base ingestion workflow
+- Admin-ready knowledge submission foundation
+- Mobile-friendly frontend experience with polished UX
+- Safe handoff patterns for private or case-specific requests
 
-- Module 1: polished frontend chatbot UI with safe public guidance
-- Module 2: backend API foundation with `/health` and `/chat`
-- Module 3: Qdrant-backed retrieval layer and PDF knowledge-base ingestion
+## Tech Stack
 
-## Local development
+- Next.js
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- FastAPI
+- Qdrant
+- OpenAI
+- pypdf
+
+## Business Use Case
+
+This project is well suited for dental clinics, dental support websites, or healthcare organizations that want an AI chatbot for public FAQ guidance, claim education, and support deflection without giving the assistant access to sensitive patient records.
+
+## Repository Structure
+
+- `app/` - frontend pages and landing experience
+- `components/` - chat UI and landing page components
+- `backend/` - FastAPI API, RAG services, and ingestion scripts
+- `Doc/` - approved public dental support documents
+- `public/` - static assets
+
+## Preview
+
+![Dental RAG Chatbot Preview](public/hero-dental-assistant.png)
+
+## Setup
 
 ### Frontend
 
@@ -32,30 +58,27 @@ python -m pip install -r backend/requirements.txt
 python -m uvicorn backend.app.main:app --reload --port 8000
 ```
 
-### Qdrant ingestion
+### Knowledge Ingestion
 
-Set `QDRANT_URL` in `backend/.env`, then ingest the public dental guide:
+Set `QDRANT_URL` in `backend/.env`, then run:
 
 ```bash
 python -m backend.app.scripts.ingest_knowledge_base
 ```
 
-To ingest the public FAQ Markdown document:
+## Project Status
 
-```bash
-python -m backend.app.scripts.ingest_knowledge_base --document Doc/public_dental_chatbot_faq_v1.md --title "Public Dental Chatbot FAQ" --category dental_chatbot_faq
-```
+Active foundation project. The public chatbot experience, backend API, and retrieval workflow are already in place, with room to expand the admin, analytics, and production-readiness layers.
 
-### Frontend to backend connection
+## Future Improvements
 
-Set this optional environment variable for the frontend:
+- Admin authentication for knowledge management
+- Richer source citation and answer traceability in the UI
+- Analytics for common questions and handoff events
+- Production deployment guidance for Qdrant and backend services
 
-```bash
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
-```
+## Developer Credit
 
-## Notes
+Built by Nexol Tech Solutions.
 
-- Qdrant requires `QDRANT_URL`; the API key can be loaded from `QDRANT_API_KEY_FILE`.
-- OpenAI is optional for local development. If `OPENAI_API_KEY` is missing, the backend uses local deterministic embeddings and extractive answers.
-- The chatbot still blocks private claim-status requests and redirects users to human support.
+- GitHub: [syed-daniyalH](https://github.com/syed-daniyalH)
