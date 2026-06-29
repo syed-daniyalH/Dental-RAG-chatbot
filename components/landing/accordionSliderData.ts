@@ -32,7 +32,7 @@ export const accordionSliderData: AccordionSliderItem[] = [
     icon: CircleAlert,
     accentColor: "from-sky-500/18 via-cyan-400/14 to-transparent",
     glowColor: "shadow-[0_30px_80px_-36px_rgba(14,165,233,0.7)]",
-    safeLabel: "General public guidance",
+    safeLabel: "Public guidance",
   },
   {
     id: "claim-rejection-support",
@@ -45,7 +45,7 @@ export const accordionSliderData: AccordionSliderItem[] = [
     icon: RefreshCcw,
     accentColor: "from-teal-400/18 via-sky-400/12 to-transparent",
     glowColor: "shadow-[0_30px_80px_-36px_rgba(20,184,166,0.7)]",
-    safeLabel: "Explains common claim workflow",
+    safeLabel: "Claim workflow",
   },
   {
     id: "dental-code-concepts",
@@ -58,7 +58,7 @@ export const accordionSliderData: AccordionSliderItem[] = [
     icon: BadgeHelp,
     accentColor: "from-indigo-400/14 via-sky-400/14 to-transparent",
     glowColor: "shadow-[0_30px_80px_-36px_rgba(56,189,248,0.65)]",
-    safeLabel: "Provider-selected final coding",
+    safeLabel: "Provider coding",
   },
   {
     id: "required-documents",
@@ -71,7 +71,7 @@ export const accordionSliderData: AccordionSliderItem[] = [
     icon: Files,
     accentColor: "from-emerald-400/16 via-cyan-400/14 to-transparent",
     glowColor: "shadow-[0_30px_80px_-36px_rgba(52,211,153,0.65)]",
-    safeLabel: "Prepared-document support",
+    safeLabel: "Document prep",
   },
   {
     id: "public-safe-handoff",
@@ -84,6 +84,6 @@ export const accordionSliderData: AccordionSliderItem[] = [
     icon: LockKeyhole,
     accentColor: "from-emerald-400/14 via-teal-400/14 to-transparent",
     glowColor: "shadow-[0_30px_80px_-36px_rgba(16,185,129,0.65)]",
-    safeLabel: "Private requests stay with people",
+    safeLabel: "Safe handoff",
   },
 ];
