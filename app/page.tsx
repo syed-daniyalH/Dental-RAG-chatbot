@@ -62,12 +62,6 @@ const ASK_CARDS = [
   },
 ] as const;
 
-const HERO_VALUE_CARDS = [
-  "Reduce repetitive support questions",
-  "Guide users before human support",
-  "Improve website support experience",
-] as const;
-
 const HERO_SUPPORT_CHIPS = [
   "Built for dental websites",
   "Source-backed answers",
@@ -374,17 +368,6 @@ export default function Home() {
               >
                 Explore Features
               </a>
-            </div>
-
-            <div className="mt-10 grid gap-3 sm:grid-cols-3">
-              {HERO_VALUE_CARDS.map((point) => (
-                <div
-                  key={point}
-                  className="rounded-2xl border border-white/70 bg-white/78 px-4 py-4 text-sm font-semibold leading-6 text-slate-700 shadow-sm backdrop-blur-sm"
-                >
-                  {point}
-                </div>
-              ))}
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
