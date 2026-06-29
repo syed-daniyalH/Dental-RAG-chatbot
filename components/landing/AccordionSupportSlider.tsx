@@ -110,15 +110,15 @@ export function AccordionSupportSlider() {
                 layout
                 initial={false}
                 animate={{
-                  flexGrow: isActive ? 5.6 : 0.95,
-                  opacity: isActive ? 1 : 0.94,
+                  flexGrow: isActive ? 4.75 : 1,
+                  opacity: isActive ? 1 : 0.92,
                   y: isActive ? 0 : 4,
                 }}
                 transition={{ type: "spring", stiffness: 220, damping: 28 }}
                 onClick={() => goToCard(index)}
                 onFocus={() => goToCard(index)}
                 className={cn(
-                  "group relative min-w-0 overflow-hidden rounded-[30px] border text-left transition",
+                  "group relative min-w-0 basis-0 overflow-hidden rounded-[30px] border text-left transition",
                   isActive
                     ? `border-sky-200/80 bg-white/96 ${card.glowColor}`
                     : "border-white/70 bg-white/74 shadow-sm hover:border-sky-100 hover:bg-white/84",
