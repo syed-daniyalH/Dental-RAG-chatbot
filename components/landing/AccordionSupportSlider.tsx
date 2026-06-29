@@ -330,7 +330,12 @@ function ExpandedCardContent({
             </div>
           </div>
 
-          <div className="relative flex-1 overflow-hidden rounded-[26px] border border-cyan-100/80 bg-[radial-gradient(circle_at_top,rgba(191,243,255,0.82),rgba(255,255,255,0.97))] p-4 shadow-sm">
+          <div
+            className={cn(
+              "relative overflow-hidden rounded-[26px] border border-cyan-100/80 bg-[radial-gradient(circle_at_top,rgba(191,243,255,0.82),rgba(255,255,255,0.97))] p-4 shadow-sm",
+              compact ? "mt-0" : "min-h-[16rem] pr-40 pb-28",
+            )}
+          >
             <div className="relative z-10">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-600">
                 What visitors learn
@@ -340,22 +345,31 @@ function ExpandedCardContent({
               </p>
             </div>
 
-            <motion.div
-              initial={false}
-              animate={{ opacity: compact ? 0.2 : 0.16, scale: compact ? 0.98 : 1 }}
-              className={cn(
-                "pointer-events-none absolute -bottom-2 right-[-0.5rem] w-[12rem]",
-                compact && "right-[-1rem] w-[10rem]",
-              )}
-            >
-              <Image
-                src="/hero-dental-assistant.png"
-                alt=""
-                width={420}
-                height={420}
-                className="h-auto w-full select-none drop-shadow-[0_20px_32px_rgba(56,189,248,0.18)]"
-              />
-            </motion.div>
+            {compact ? (
+              <div className="relative z-10 mt-4 flex justify-end">
+                <Image
+                  src="/hero-dental-assistant.png"
+                  alt=""
+                  width={240}
+                  height={240}
+                  className="h-auto w-[8.5rem] select-none opacity-20 drop-shadow-[0_20px_32px_rgba(56,189,248,0.14)]"
+                />
+              </div>
+            ) : (
+              <motion.div
+                initial={false}
+                animate={{ opacity: 0.16, scale: 1 }}
+                className="pointer-events-none absolute -bottom-2 right-[-0.5rem] w-[12rem]"
+              >
+                <Image
+                  src="/hero-dental-assistant.png"
+                  alt=""
+                  width={420}
+                  height={420}
+                  className="h-auto w-full select-none drop-shadow-[0_20px_32px_rgba(56,189,248,0.18)]"
+                />
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
