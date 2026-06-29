@@ -8,12 +8,14 @@ interface WorkflowNodeCardProps {
   step: WorkflowStep;
   index: number;
   compact?: boolean;
+  className?: string;
 }
 
 export function WorkflowNodeCard({
   step,
   index,
   compact = false,
+  className,
 }: WorkflowNodeCardProps) {
   const Icon = step.icon;
 
@@ -24,7 +26,10 @@ export function WorkflowNodeCard({
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.55, delay: index * 0.1 }}
-        className="group relative min-h-[165px] w-full rounded-[2rem] border border-white/70 bg-white/80 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:border-cyan-200/90 hover:shadow-[0_30px_90px_rgba(14,165,233,0.14)] focus:outline-none focus-visible:ring-4 focus-visible:ring-cyan-100"
+        className={cn(
+          "group relative min-h-[165px] w-full rounded-[2rem] border border-white/70 bg-white/80 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:border-cyan-200/90 hover:shadow-[0_30px_90px_rgba(14,165,233,0.14)] focus:outline-none focus-visible:ring-4 focus-visible:ring-cyan-100",
+          className,
+        )}
         tabIndex={0}
       >
         <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top_right,rgba(125,211,252,0.16),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(45,212,191,0.12),transparent_28%)] opacity-0 transition duration-300 group-hover:opacity-100" />
@@ -60,6 +65,7 @@ export function WorkflowNodeCard({
       className={cn(
         "group relative rounded-[2rem] border border-white/70 bg-white/80 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:border-cyan-200/90 hover:shadow-[0_30px_90px_rgba(14,165,233,0.14)] focus:outline-none focus-visible:ring-4 focus-visible:ring-cyan-100",
         "min-h-[155px] w-full",
+        className,
       )}
       tabIndex={0}
     >
