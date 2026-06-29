@@ -6,7 +6,6 @@ import {
   ArrowRight,
   BadgeCheck,
   BookOpenText,
-  Bot,
   CheckCircle2,
   ClipboardList,
   Database,
