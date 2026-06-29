@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Bot, ShieldCheck } from "lucide-react";
+import { Bot } from "lucide-react";
 import { AnimatedConnectionLine } from "@/components/landing/AnimatedConnectionLine";
 import { WorkflowNodeCard } from "@/components/landing/WorkflowNodeCard";
 import {
@@ -93,21 +93,6 @@ export function AnimatedWorkflowSection() {
           </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.55, delay: 0.16 }}
-          className="mx-auto mt-16 flex max-w-4xl flex-col items-center gap-4 rounded-[1.75rem] border border-cyan-100 bg-white/80 px-6 py-4 text-center shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:flex-row sm:rounded-full sm:text-left"
-        >
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 shadow-sm">
-            <ShieldCheck className="h-7 w-7" />
-          </div>
-          <p className="text-base leading-8 text-slate-600">
-            <span className="font-semibold text-slate-950">Public-safe by design.</span>{" "}
-            We never access patient records, claim status, or private insurance accounts.
-          </p>
-        </motion.div>
       </div>
     </section>
   );
