@@ -39,18 +39,25 @@ const MENU_LINKS: MenuLink[] = [
     number: "02",
   },
   {
+    label: "Upload Information",
+    description: "Jump straight to the knowledge upload and management preview.",
+    href: "#operations",
+    badge: "Admin",
+    number: "03",
+  },
+  {
     label: "Demo",
     description: "Jump to the source-backed support preview.",
     href: "#demo",
     badge: "Core",
-    number: "03",
+    number: "04",
   },
   {
     label: "Contact",
     description: "Go straight to the final call-to-action section.",
     href: "#contact",
     badge: "Core",
-    number: "04",
+    number: "05",
   },
 ];
 
@@ -125,7 +132,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
 
             <div className="flex shrink-0 items-center gap-2">
               <span className="rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-sky-600">
-                4 links
+                5 links
               </span>
               <ChevronDown
                 className={cn(
@@ -152,7 +159,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
                     Core navigation
                   </p>
                   <h2 className="mt-1 font-display text-xl font-semibold text-slate-950">
-                    Four priority sections for a cleaner header
+                    Five priority sections for a cleaner header
                   </h2>
                 </div>
                 <button
@@ -234,7 +241,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
                   Core navigation
                 </p>
                 <h2 className="mt-1 font-display text-lg font-semibold text-slate-950">
-                  Four priority sections
+                  Five priority sections
                 </h2>
               </div>
 

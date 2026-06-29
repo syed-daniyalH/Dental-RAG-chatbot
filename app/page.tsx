@@ -129,10 +129,11 @@ const FEATURE_CARDS = [
 ] as const;
 
 const HEADER_LINKS = [
-  { label: "Features", href: "#features" },
-  { label: "Safety", href: "#safety" },
-  { label: "Questions", href: "#questions" },
-  { label: "Contact", href: "#contact" },
+  { label: "Features", href: "#features", emphasis: false },
+  { label: "Safety", href: "#safety", emphasis: false },
+  { label: "Questions", href: "#questions", emphasis: false },
+  { label: "Upload Info", href: "#operations", emphasis: true },
+  { label: "Contact", href: "#contact", emphasis: false },
 ] as const;
 
 const FOOTER_PRODUCT_LINKS = [
@@ -305,10 +306,12 @@ export default function Home() {
                     href={link.href}
                     className={cn(
                       "relative whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold tracking-[-0.01em] transition",
-                      index === HEADER_LINKS.length - 1
-                        ? "text-slate-500 hover:bg-white/90 hover:text-slate-950"
-                        : "text-slate-600 hover:bg-white/90 hover:text-slate-950",
-                      index !== 0 &&
+                      link.emphasis
+                        ? "bg-gradient-to-r from-sky-50 via-white to-teal-50 text-sky-700 shadow-sm ring-1 ring-sky-100/90 hover:bg-white hover:text-sky-800 hover:ring-sky-200"
+                        : index === HEADER_LINKS.length - 1
+                          ? "text-slate-500 hover:bg-white/90 hover:text-slate-950"
+                          : "text-slate-600 hover:bg-white/90 hover:text-slate-950",
+                      !link.emphasis && index !== 0 &&
                         "before:absolute before:left-0 before:top-1/2 before:h-4 before:w-px before:-translate-y-1/2 before:bg-slate-200/80",
                     )}
                   >
