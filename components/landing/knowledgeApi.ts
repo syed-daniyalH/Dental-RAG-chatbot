@@ -8,10 +8,15 @@ export interface KnowledgeSubmissionPayload {
 
 export interface KnowledgeSubmissionApiResponse {
   submission_id: string;
+  status: "pending_review" | "approved" | "rejected" | "indexed";
   message: string;
   indexed: boolean;
   source_title: string;
   matched_keywords: string[];
+}
+
+export interface KnowledgeSubmissionRequestOptions {
+  adminApiKey?: string;
 }
 
 const DEFAULT_BACKEND_URL = "http://localhost:8000";
@@ -22,15 +27,21 @@ function getBackendBaseUrl() {
 
 export async function submitKnowledgeEntry(
   payload: KnowledgeSubmissionPayload,
+  options: KnowledgeSubmissionRequestOptions = {},
 ): Promise<KnowledgeSubmissionApiResponse> {
   let response: Response;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (options.adminApiKey) {
+    headers["x-admin-api-key"] = options.adminApiKey;
+  }
 
   try {
-    response = await fetch(`${getBackendBaseUrl()}/admin/knowledge-submissions`, {
+    response = await fetch(`${getBackendBaseUrl()}/admin/submit-knowledge`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(payload),
     });
   } catch {

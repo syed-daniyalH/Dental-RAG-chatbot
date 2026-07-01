@@ -19,6 +19,7 @@ class Settings(BaseModel):
   app_name: str = "Public Dental Support Chatbot API"
   app_env: str = "development"
   frontend_url: str = "http://localhost:3000"
+  admin_api_key: str | None = None
   allowed_origins: list[str] = Field(default_factory=list)
   max_message_length: int = 1000
   api_version: str = "1.0.0"
@@ -99,6 +100,7 @@ def get_settings() -> Settings:
     app_name=os.getenv("APP_NAME", "Public Dental Support Chatbot API"),
     app_env=os.getenv("APP_ENV", "development"),
     frontend_url=frontend_url,
+    admin_api_key=_optional_env("ADMIN_API_KEY"),
     allowed_origins=deduped_origins,
     qdrant_url=_optional_env("QDRANT_URL"),
     qdrant_api_key=qdrant_api_key,

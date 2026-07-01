@@ -28,6 +28,9 @@ class ChatResponse(BaseModel):
   response_type: Literal["general_guidance", "safe_handoff", "error"]
 
 
+KnowledgeSubmissionStatus = Literal["pending_review", "approved", "rejected", "indexed"]
+
+
 class KnowledgeSubmissionRequest(BaseModel):
   question: str = Field(..., max_length=500)
   answer: str = Field(..., max_length=2000)
@@ -83,7 +86,18 @@ class KnowledgeSubmissionRequest(BaseModel):
 
 class KnowledgeSubmissionResponse(BaseModel):
   submission_id: str
+  status: KnowledgeSubmissionStatus
   message: str
   indexed: bool
   source_title: str
+  matched_keywords: list[str] = Field(default_factory=list)
+
+
+class KnowledgeSubmissionRecord(BaseModel):
+  submission_id: str
+  status: KnowledgeSubmissionStatus
+  submitted_at: str | None = None
+  question: str
+  answer: str
+  keywords: list[str] = Field(default_factory=list)
   matched_keywords: list[str] = Field(default_factory=list)

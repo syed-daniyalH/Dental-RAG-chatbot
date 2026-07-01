@@ -4,17 +4,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 import uuid
 
-from ..config import PROJECT_ROOT, Settings, get_settings
-from ..schemas import KnowledgeSubmissionRequest, KnowledgeSubmissionResponse
+from ..config import PROJECT_ROOT
+from ..schemas import KnowledgeSubmissionRequest, KnowledgeSubmissionResponse, KnowledgeSubmissionStatus
 from ..utils.safety import is_private_request, normalize_text
-from .document_ingestion import DocumentChunk
-from .embedding_service import EmbeddingService
-from .qdrant_store import QdrantStore
 
 
 SUBMISSION_SOURCE_TITLE = "User Submitted Dental Q&A"
-SUBMISSION_CATEGORY = "dental_user_submission"
 SUBMISSION_DOCUMENT_PATH = PROJECT_ROOT / "Doc" / "public_dental_admin_submissions.md"
+SUBMISSION_STATUS: KnowledgeSubmissionStatus = "pending_review"
 
 SUPPORTED_DENTAL_TERMS = (
   "dental",
@@ -64,11 +61,6 @@ SUPPORTED_DENTAL_TERMS = (
 
 
 class KnowledgeSubmissionService:
-  def __init__(self, settings: Settings):
-    self.settings = settings
-    self.embeddings = EmbeddingService(settings)
-    self.store = QdrantStore(settings)
-
   def submit(self, request: KnowledgeSubmissionRequest) -> KnowledgeSubmissionResponse:
     keywords = [keyword.lower() for keyword in request.keywords]
     content_text = normalize_text(f"{request.question} {request.answer}")
@@ -108,44 +100,18 @@ class KnowledgeSubmissionService:
 
     _append_submission_record(SUBMISSION_DOCUMENT_PATH, record_text)
 
-    indexed = False
-    if self.store.is_configured:
-      chunk = DocumentChunk(
-        id=submission_id,
-        text=record_text,
-        payload={
-          "text": record_text,
-          "source_title": SUBMISSION_SOURCE_TITLE,
-          "source_path": str(SUBMISSION_DOCUMENT_PATH),
-          "category": SUBMISSION_CATEGORY,
-          "submitted_at": timestamp,
-          "question": request.question,
-          "answer": request.answer,
-          "keywords": keywords,
-          "matched_keywords": matched_keywords,
-        },
-      )
-      vectors = self.embeddings.embed_documents([record_text])
-      self.store.upsert_chunks([chunk], vectors)
-      indexed = True
-
-    message = (
-      "Submission saved and indexed into the knowledge base."
-      if indexed
-      else "Submission saved for future ingestion."
-    )
-
     return KnowledgeSubmissionResponse(
       submission_id=submission_id,
-      message=message,
-      indexed=indexed,
+      status=SUBMISSION_STATUS,
+      message="Knowledge submitted for review.",
+      indexed=False,
       source_title=SUBMISSION_SOURCE_TITLE,
       matched_keywords=matched_keywords,
     )
 
 
 def submit_knowledge_submission(request: KnowledgeSubmissionRequest) -> KnowledgeSubmissionResponse:
-  return KnowledgeSubmissionService(get_settings()).submit(request)
+  return KnowledgeSubmissionService().submit(request)
 
 
 def _matched_dental_terms(value: str) -> list[str]:
@@ -178,18 +144,26 @@ def _format_submission_record(
   return (
     f"## Submission {submission_id}\n\n"
     f"- Submitted at: {timestamp}\n"
+    f"- Status: {SUBMISSION_STATUS}\n"
     f"- Question: {question}\n"
     f"- Answer: {answer}\n"
     f"- Keywords: {keyword_text}\n"
     f"- Matched dental terms: {matched_text}\n"
-    f"- Status: approved for public dental knowledge-base review\n\n"
+    f"- Review note: Submitted through the admin review queue.\n\n"
   )
 
 
 def _append_submission_record(path: Path, record_text: str) -> None:
   path.parent.mkdir(parents=True, exist_ok=True)
   if not path.exists():
-    path.write_text("# Public Dental Q&A Submissions\n\n", encoding="utf-8")
+    path.write_text(
+      (
+        "# Public Dental Q&A Submissions\n"
+        "This file stores admin-reviewed public dental Q&A submissions for later ingestion into the knowledge base.\n"
+        "Pending review entries are kept here until they are approved for indexing.\n\n"
+      ),
+      encoding="utf-8",
+    )
 
   with path.open("a", encoding="utf-8") as handle:
     handle.write(record_text)

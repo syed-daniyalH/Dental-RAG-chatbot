@@ -171,7 +171,7 @@ export function AnimatedWorkflowSection() {
 
   return (
     <section
-      id="workflow"
+      id="how-it-works"
       className="relative overflow-hidden bg-gradient-to-br from-white via-sky-50 to-cyan-50 py-20 md:py-24 lg:py-28"
     >
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_14%_22%,rgba(186,230,253,0.3),transparent_24%),radial-gradient(circle_at_86%_18%,rgba(153,246,228,0.24),transparent_20%)]" />

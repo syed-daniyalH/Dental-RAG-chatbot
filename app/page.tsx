@@ -118,7 +118,7 @@ const FEATURE_CARDS = [
   },
   {
     title: "Admin-Ready Knowledge Base",
-    description: "Prepared for document upload, chunking, review, and Qdrant-backed retrieval expansion.",
+    description: "Prepared for review, chunking, and Qdrant-backed retrieval expansion.",
     icon: Database,
   },
   {
@@ -132,30 +132,32 @@ const HEADER_LINKS = [
   { label: "Features", href: "#features", emphasis: false },
   { label: "Safety", href: "#safety", emphasis: false },
   { label: "Questions", href: "#questions", emphasis: false },
-  { label: "Upload Info", href: "#operations", emphasis: true },
+  { label: "Operations", href: "#operations", emphasis: true },
   { label: "Contact", href: "#contact", emphasis: false },
 ] as const;
 
-const FOOTER_PRODUCT_LINKS = [
+type FooterLink = { label: string; href: string } | { label: string; action: "openChat" };
+
+const FOOTER_PRODUCT_LINKS: FooterLink[] = [
   { label: "Features", href: "#features" },
-  { label: "How It Works", href: "#workflow" },
+  { label: "How It Works", href: "#how-it-works" },
   { label: "Questions", href: "#questions" },
-  { label: "Demo", href: "#demo" },
-] as const;
+  { label: "Demo", action: "openChat" },
+];
 
-const FOOTER_SAFETY_LINKS = [
+const FOOTER_SAFETY_LINKS: FooterLink[] = [
   { label: "Public-Safe Design", href: "#safety" },
-  { label: "Privacy Notice", href: "#privacy" },
+  { label: "Privacy Notice", href: "#privacy-notice" },
   { label: "Safe Handoff", href: "#safety" },
-  { label: "Source-Based Answers", href: "#demo" },
-] as const;
+  { label: "Source-Based Answers", href: "#knowledge-base" },
+];
 
-const FOOTER_RESOURCE_LINKS = [
-  { label: "Knowledge Base", href: "#knowledge" },
+const FOOTER_RESOURCE_LINKS: FooterLink[] = [
+  { label: "Knowledge Base", href: "#knowledge-base" },
   { label: "Dental Claims FAQ", href: "#questions" },
   { label: "Common Claim Issues", href: "#questions" },
   { label: "Contact Support", href: "#contact" },
-] as const;
+];
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -502,7 +504,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="knowledge" className="py-12 lg:py-16">
+        <section id="knowledge-base" className="py-12 lg:py-16">
           <div className="mx-auto max-w-[1120px]">
             <AccordionSupportSlider />
           </div>
@@ -514,7 +516,7 @@ export default function Home() {
               <SectionHeader
                 eyebrow="Prepared for operations"
                 title="Knowledge base management preview"
-                description="Teams can upload approved public Q&A entries, tag them with dental keywords, and keep the knowledge base current."
+                description="Teams can review public Q&A submissions, tag them with dental keywords, and keep the knowledge base current."
               />
             </div>
 
@@ -553,7 +555,7 @@ export default function Home() {
             </div>
 
             <footer
-              id="privacy"
+              id="privacy-notice"
               className="mt-6 rounded-[2rem] border border-cyan-100/70 bg-white/80 px-6 py-10 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:px-8 sm:py-12 lg:px-10 lg:py-12"
             >
               <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -576,9 +578,9 @@ export default function Home() {
                   </p>
                 </div>
 
-                <FooterLinkColumn title="Product" links={FOOTER_PRODUCT_LINKS} />
-                <FooterLinkColumn title="Safety" links={FOOTER_SAFETY_LINKS} />
-                <FooterLinkColumn title="Resources" links={FOOTER_RESOURCE_LINKS} />
+                <FooterLinkColumn title="Product" links={FOOTER_PRODUCT_LINKS} onOpenChat={openChat} />
+                <FooterLinkColumn title="Safety" links={FOOTER_SAFETY_LINKS} onOpenChat={openChat} />
+                <FooterLinkColumn title="Resources" links={FOOTER_RESOURCE_LINKS} onOpenChat={openChat} />
               </div>
 
               <div className="mt-10 border-t border-slate-200/70 pt-6">
@@ -635,12 +637,11 @@ function SectionHeader({
 function FooterLinkColumn({
   title,
   links,
+  onOpenChat,
 }: {
   title: string;
-  links: ReadonlyArray<{
-    label: string;
-    href: string;
-  }>;
+  links: ReadonlyArray<FooterLink>;
+  onOpenChat: () => void;
 }) {
   return (
     <div>
@@ -648,20 +649,30 @@ function FooterLinkColumn({
       <ul className="mt-4 space-y-3">
         {links.map((link) => (
           <li key={link.label}>
-            <a
-              href={link.href}
-              className="group inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:translate-x-0.5 hover:text-sky-700"
-            >
-              <span>{link.label}</span>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 opacity-0 transition group-hover:opacity-100" />
-            </a>
+            {"href" in link ? (
+              <a
+                href={link.href}
+                className="group inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:translate-x-0.5 hover:text-sky-700"
+              >
+                <span>{link.label}</span>
+                <ArrowRight className="h-3.5 w-3.5 shrink-0 opacity-0 transition group-hover:opacity-100" />
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={onOpenChat}
+                className="group inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:translate-x-0.5 hover:text-sky-700"
+              >
+                <span>{link.label}</span>
+                <ArrowRight className="h-3.5 w-3.5 shrink-0 opacity-0 transition group-hover:opacity-100" />
+              </button>
+            )}
           </li>
         ))}
       </ul>
     </div>
   );
 }
-
 
 function HeroDoctorIllustration() {
   return (

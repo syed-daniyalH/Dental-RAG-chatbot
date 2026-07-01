@@ -31,7 +31,7 @@ app.include_router(chat_router)
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
   detail = "Invalid request body."
-  is_submission_request = request.url.path.startswith("/admin/knowledge-submissions")
+  is_admin_request = request.url.path.startswith("/admin/")
 
   for error in exc.errors():
     location = error.get("loc", ())
@@ -45,15 +45,15 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         detail = "Message is required."
       break
 
-    if is_submission_request and field_name == "question":
+    if is_admin_request and field_name == "question":
       detail = "Question is required."
       break
 
-    if is_submission_request and field_name == "answer":
+    if is_admin_request and field_name == "answer":
       detail = "Answer is required."
       break
 
-    if is_submission_request and field_name == "keywords":
+    if is_admin_request and field_name == "keywords":
       detail = "At least one dental keyword is required."
       break
 
@@ -62,8 +62,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
-  if request.url.path.startswith("/admin/knowledge-submissions"):
-    detail = "Something went wrong while saving the submission."
+  if request.url.path.startswith("/admin/"):
+    detail = "Something went wrong while processing the admin request."
   else:
     detail = "Something went wrong while processing the message."
 

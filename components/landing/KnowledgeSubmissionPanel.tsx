@@ -35,12 +35,19 @@ const BLOCKED_EXAMPLES = [
 
 type SubmissionState =
   | { status: "idle" }
-  | { status: "success"; message: string; indexed: boolean; matchedKeywords: string[] }
+  | {
+      status: "success";
+      message: string;
+      submissionStatus: "pending_review" | "approved" | "rejected" | "indexed";
+      indexed: boolean;
+      matchedKeywords: string[];
+    }
   | { status: "error"; message: string };
 
 export function KnowledgeSubmissionPanel() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [adminKey, setAdminKey] = useState("");
   const [keywords, setKeywords] = useState("claim, insurance, crown");
   const [isSaving, setIsSaving] = useState(false);
   const [submissionState, setSubmissionState] = useState<SubmissionState>({ status: "idle" });
@@ -51,6 +58,7 @@ export function KnowledgeSubmissionPanel() {
     const parsedKeywords = parseKeywords(keywords);
     const cleanQuestion = normalizeText(question);
     const cleanAnswer = normalizeText(answer);
+    const cleanAdminKey = normalizeText(adminKey);
 
     if (!cleanQuestion) {
       setSubmissionState({ status: "error", message: "Please add a dental support question." });
@@ -59,6 +67,14 @@ export function KnowledgeSubmissionPanel() {
 
     if (!cleanAnswer) {
       setSubmissionState({ status: "error", message: "Please add a helpful answer." });
+      return;
+    }
+
+    if (!cleanAdminKey) {
+      setSubmissionState({
+        status: "error",
+        message: "Enter the admin access key before submitting knowledge.",
+      });
       return;
     }
 
@@ -74,11 +90,16 @@ export function KnowledgeSubmissionPanel() {
     setSubmissionState({ status: "idle" });
 
     try {
-      const response = await submitKnowledgeEntry({
-        question: cleanQuestion,
-        answer: cleanAnswer,
-        keywords: parsedKeywords,
-      });
+      const response = await submitKnowledgeEntry(
+        {
+          question: cleanQuestion,
+          answer: cleanAnswer,
+          keywords: parsedKeywords,
+        },
+        {
+          adminApiKey: cleanAdminKey,
+        },
+      );
 
       setQuestion("");
       setAnswer("");
@@ -86,6 +107,7 @@ export function KnowledgeSubmissionPanel() {
       setSubmissionState({
         status: "success",
         message: response.message,
+        submissionStatus: response.status,
         indexed: response.indexed,
         matchedKeywords: response.matched_keywords,
       });
@@ -107,20 +129,23 @@ export function KnowledgeSubmissionPanel() {
       <div className="flex items-center justify-between gap-4 rounded-[24px] border border-white/80 bg-[linear-gradient(135deg,rgba(14,165,233,0.08),rgba(20,184,166,0.1),rgba(255,255,255,0.95))] px-5 py-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-600">
-            Knowledge upload
+            Admin knowledge review
           </p>
           <h3 className="mt-1 font-display text-xl font-semibold text-slate-950">
-            Submit public dental Q&A
+            Submit public dental Q&A for review
           </h3>
         </div>
         <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
           <CheckCircle2 className="h-3.5 w-3.5" />
-          Dental-keyword checked
+          x-admin-api-key required
         </div>
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
-        <form onSubmit={handleSubmit} className="rounded-[24px] border border-slate-200/75 bg-white/90 p-5 shadow-sm">
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-[24px] border border-slate-200/75 bg-white/90 p-5 shadow-sm"
+        >
           <div className="space-y-4">
             <label className="block">
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -150,6 +175,22 @@ export function KnowledgeSubmissionPanel() {
 
             <label className="block">
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Admin access key
+              </span>
+              <input
+                type="password"
+                value={adminKey}
+                onChange={(event) => setAdminKey(event.target.value)}
+                placeholder="Enter the admin API key"
+                className="mt-2 w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-200 focus:ring-4 focus:ring-sky-100"
+              />
+              <p className="mt-2 text-xs leading-6 text-slate-500">
+                This header is sent as <span className="font-semibold">x-admin-api-key</span> and is required by the backend.
+              </p>
+            </label>
+
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Dental keywords
               </span>
               <input
@@ -167,9 +208,12 @@ export function KnowledgeSubmissionPanel() {
               <div className="rounded-[18px] border border-emerald-100 bg-emerald-50/85 px-4 py-3 text-sm leading-6 text-emerald-800">
                 <p className="font-semibold">{submissionState.message}</p>
                 <p className="mt-1">
+                  Review status: {submissionState.submissionStatus.replace("_", " ")}.
+                </p>
+                <p className="mt-1">
                   {submissionState.indexed
                     ? "Indexed live into the retrieval layer."
-                    : "Saved for later ingestion."}
+                    : "Queued for manual approval before any future indexing."}
                 </p>
                 {submissionState.matchedKeywords.length ? (
                   <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-emerald-700">
@@ -187,7 +231,7 @@ export function KnowledgeSubmissionPanel() {
 
             {submissionState.status === "idle" ? (
               <div className="rounded-[18px] border border-sky-100 bg-sky-50/70 px-4 py-3 text-sm leading-6 text-slate-600">
-                Add only public dental support content. The upload is meant for approved questions about claims, codes, insurance terms, and safe next steps.
+                Add only public dental support content. Submissions enter a pending review queue before any future indexing.
               </div>
             ) : null}
 
@@ -200,7 +244,7 @@ export function KnowledgeSubmissionPanel() {
               )}
             >
               <UploadCloud className="h-4 w-4" />
-              {isSaving ? "Saving submission..." : "Validate and Save"}
+              {isSaving ? "Saving submission..." : "Submit for Review"}
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -215,7 +259,7 @@ export function KnowledgeSubmissionPanel() {
             What passes validation
           </h4>
           <p className="mt-2 text-sm leading-7 text-slate-600">
-            Use public dental wording that matches the site’s support scope. This keeps uploads aligned with the chatbot’s approved tone and topics.
+            Use public dental wording that matches the site&apos;s support scope. This keeps submissions aligned with the chatbot&apos;s approved tone and topics.
           </p>
 
           <div className="mt-5 flex flex-wrap gap-2">

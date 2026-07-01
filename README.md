@@ -11,7 +11,7 @@ Dental RAG Chatbot is a public-safe AI chatbot web application built for dental 
 - FastAPI backend with chat and health endpoints
 - Qdrant-ready RAG pipeline for source-backed answers
 - PDF knowledge-base ingestion workflow
-- Admin-ready knowledge submission foundation
+- Admin-only knowledge submission flow with pending review
 - Mobile-friendly frontend experience with polished UX
 - Safe handoff patterns for private or case-specific requests
 
@@ -51,6 +51,8 @@ npm install
 npm run dev
 ```
 
+If your backend is not running at `http://localhost:8000`, set `NEXT_PUBLIC_BACKEND_URL` before starting the frontend. Use `BACKEND_URL` for backend-side configuration if needed.
+
 ### Backend
 
 ```bash
@@ -69,6 +71,13 @@ python -m backend.app.scripts.ingest_knowledge_base
 ## Project Status
 
 Active foundation project. The public chatbot experience, backend API, and retrieval workflow are already in place, with room to expand the admin, analytics, and production-readiness layers.
+
+Current MVP notes:
+
+- Public navigation uses working section anchors and chat-open CTAs instead of stale demo links.
+- Knowledge submission lives in the `/admin` route and requires `x-admin-api-key`.
+- The admin page includes a small pending-review queue with approve and reject actions.
+- Public chat and health routes remain open to visitors.
 
 ## Future Improvements
 

@@ -21,7 +21,11 @@ python -m uvicorn app.main:app --reload --port 8000
 - `GET /`
 - `GET /health`
 - `POST /chat`
-- `POST /admin/knowledge-submissions`
+- `POST /admin/submit-knowledge`
+- `POST /admin/knowledge-submissions` (legacy alias)
+- `GET /admin/submissions`
+- `POST /admin/submissions/{submission_id}/approve`
+- `POST /admin/submissions/{submission_id}/reject`
 
 ## Environment
 
@@ -39,6 +43,8 @@ The backend reads these values from `backend/.env`:
 - `RAG_TOP_K`
 - `CHUNK_SIZE`
 - `CHUNK_OVERLAP`
+- `ADMIN_API_KEY`
+- `BACKEND_URL`
 
 Use `backend/.env.example` as the template.
 
@@ -74,10 +80,15 @@ If you want to index that file manually, run:
 python -m backend.app.scripts.ingest_knowledge_base --document Doc/public_dental_admin_submissions.md --title "User Submitted Dental Q&A" --category dental_user_submission
 ```
 
+Only entries marked `approved` or `indexed` are eligible during ingestion; `pending_review` records stay out of Qdrant.
+
 ## Notes
 
 - The `/chat` endpoint uses Qdrant retrieval when `QDRANT_URL` is configured.
-- The `/admin/knowledge-submissions` endpoint validates dental keywords, blocks private claim data, and appends approved entries for future ingestion.
+- Admin routes require `x-admin-api-key` and are not publicly writable without a valid key.
+- The `/admin/submit-knowledge` endpoint validates dental keywords, blocks private claim data, and stores new entries as `pending_review`.
+- The `/admin/submissions` endpoint lets internal admins review pending items and mark them approved or rejected.
+- Only approved or indexed submission records are eligible for later ingestion into Qdrant.
 - If Qdrant is not configured, the endpoint falls back to the structured dummy responses.
 - If OpenAI is not configured, the backend can still use local deterministic embeddings and extractive answers for development.
 - The private-information safety handoff remains active before retrieval.

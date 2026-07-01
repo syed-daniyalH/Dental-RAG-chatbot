@@ -18,7 +18,8 @@ interface MegaMenuProps {
 type MenuLink = {
   label: string;
   description: string;
-  href: string;
+  href?: string;
+  action?: "openChat";
   badge: string;
   number: string;
 };
@@ -39,17 +40,17 @@ const MENU_LINKS: MenuLink[] = [
     number: "02",
   },
   {
-    label: "Upload Information",
-    description: "Jump straight to the knowledge upload and management preview.",
+    label: "Operations",
+    description: "Jump straight to the knowledge-management preview.",
     href: "#operations",
     badge: "Admin",
     number: "03",
   },
   {
     label: "Demo",
-    description: "Jump to the source-backed support preview.",
-    href: "#demo",
-    badge: "Core",
+    description: "Open the floating chatbot widget directly.",
+    action: "openChat",
+    badge: "Chat",
     number: "04",
   },
   {
@@ -183,6 +184,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
                   >
                     <MenuItem
                       {...link}
+                      onOpenChat={onOpenChat}
                       onSelect={() => {
                         closeMenus();
                       }}
@@ -251,6 +253,7 @@ export function MegaMenu({ onOpenChat }: MegaMenuProps) {
                     key={link.label}
                     {...link}
                     compact
+                    onOpenChat={onOpenChat}
                     onSelect={() => {
                       closeMenus();
                     }}
@@ -281,18 +284,22 @@ function MenuItem({
   label,
   description,
   href,
+  action,
   badge,
   number,
   compact = false,
   onSelect,
+  onOpenChat,
 }: {
   label: string;
   description: string;
   href?: string;
+  action?: "openChat";
   badge?: string;
   number: string;
   compact?: boolean;
   onSelect: () => void;
+  onOpenChat: () => void;
 }) {
   const commonClassName = cn(
     "group flex w-full items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/88 px-3 py-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-sky-50/75 hover:shadow-panel",
@@ -319,13 +326,24 @@ function MenuItem({
     </>
   );
 
+  const handleSelect = () => {
+    if (action === "openChat") {
+      onOpenChat();
+    }
+    onSelect();
+  };
+
   if (href) {
     return (
-      <a href={href} onClick={onSelect} className={commonClassName}>
+      <a href={href} onClick={handleSelect} className={commonClassName}>
         {content}
       </a>
     );
   }
 
-  return null;
+  return (
+    <button type="button" onClick={handleSelect} className={commonClassName}>
+      {content}
+    </button>
+  );
 }
